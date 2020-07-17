@@ -1,0 +1,15 @@
+main.flex-container-center {
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-top: 20px;
+
+}
+#leftColumn img{
+    max-width: 100%;
+}
+#leftColumn{
+    padding-right: 2.5%;
+}
+#rightColumn{
+    padding-left: 2.5%;
+}

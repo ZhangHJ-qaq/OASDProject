@@ -1,0 +1,15 @@
+#carouselExampleIndicators{
+    margin-left: 10%;
+    margin-right: 10%;
+}
+#carouselExampleIndicators img{
+    height: 500px;
+    object-fit: cover;
+}
+#hotPhotosDisplayArea{
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
