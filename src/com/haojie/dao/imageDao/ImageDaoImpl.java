@@ -1,6 +1,7 @@
 package com.haojie.dao.imageDao;
 
 import com.haojie.bean.Image;
+import com.haojie.bean.User;
 import com.haojie.dao.genericDao.GenericDao;
 import com.sun.org.apache.xml.internal.dtm.ref.DTMDefaultBaseIterators;
 
@@ -78,5 +79,16 @@ public class ImageDaoImpl extends GenericDao<Image> implements ImageDao {
             return null;
         }
 
+    }
+
+    @Override
+    public List<Image> getMyPhotos(User user) {
+        String sql = "select * from travelimage where uid=?";
+        try {
+            List<Image> imageList = this.queryForList(this.connection, sql, user.getUid());
+            return imageList;
+        } catch (SQLException sqlException) {
+            return null;
+        }
     }
 }

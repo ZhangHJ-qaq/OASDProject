@@ -42,6 +42,24 @@
         <servlet-name>searchjsp</servlet-name>
         <url-pattern>/searchjsp</url-pattern>
     </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>myphotojsp</servlet-name>
+        <jsp-file>/myphoto.jsp</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>myphotojsp</servlet-name>
+        <url-pattern>/myphotojsp</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>myfavorjsp</servlet-name>
+        <jsp-file>/myfavor.jsp</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>myfavorjsp</servlet-name>
+        <url-pattern>/myfavorjsp</url-pattern>
+    </servlet-mapping>
 
 
 </web-app>

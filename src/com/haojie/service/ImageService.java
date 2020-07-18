@@ -1,6 +1,7 @@
 package com.haojie.service;
 
 import com.haojie.bean.Image;
+import com.haojie.bean.User;
 import com.haojie.dao.imageDao.ImageDao;
 import com.haojie.dao.imageDao.ImageDaoImpl;
 import com.haojie.others.SearchResult;
@@ -77,6 +78,39 @@ public class ImageService {
             return null;
         }
 
+    }
+
+    public SearchResult getMyPhotos(User user, int requestedPage, int pageSize) {
+        try {
+
+            ImageDaoImpl imageDao = new ImageDaoImpl(connection);
+
+            List<Image> imageList = imageDao.getMyPhotos(user);
+
+            ArrayList<Image> subImageList = new ArrayList<>();
+            SearchResult searchResult = new SearchResult();
+
+            int maxPage = imageList.size() / pageSize + 1;
+            searchResult.setMaxPage(maxPage);
+
+            requestedPage = Math.max(requestedPage, 1);
+            requestedPage = Math.min(maxPage, requestedPage);
+
+            searchResult.setRespondedPage(requestedPage);
+
+            int start = pageSize * (requestedPage - 1);
+            int end = Math.min(start + pageSize, imageList.size());
+
+            for (int i = start; i < end; i++) {
+                subImageList.add(imageList.get(i));
+            }
+
+            searchResult.setImageList(subImageList);
+
+            return searchResult;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
 

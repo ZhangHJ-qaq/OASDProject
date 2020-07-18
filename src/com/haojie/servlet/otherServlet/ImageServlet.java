@@ -5,9 +5,12 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.haojie.bean.User;
 import com.haojie.others.SearchResult;
 import com.haojie.service.ImageService;
+import com.haojie.service.UserService;
 import org.apache.commons.dbutils.DbUtils;
+import sun.security.mscapi.PRNG;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -25,6 +28,10 @@ public class ImageServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if (request.getParameter("method").equals("pureSearch")) {
             pureSearch(request, response);
+            return;
+        }
+        if (request.getParameter("method").equals("myphoto")) {
+            myPhoto(request, response);
         }
 
     }
@@ -35,16 +42,16 @@ public class ImageServlet extends HttpServlet {
 
     private void pureSearch(HttpServletRequest request, HttpServletResponse response) {
         String howToSearch = request.getParameter("howToSearch");
-        String howToOrder = request.getParameter("howToOrder");
-        String input = request.getParameter("input");
-        int requestedPage = Integer.parseInt(request.getParameter("requestedPage"));
-        int pageSize = Integer.parseInt(request.getParameter("pageSize"));
+            String howToOrder = request.getParameter("howToOrder");
+            String input = request.getParameter("input");
+            int requestedPage = Integer.parseInt(request.getParameter("requestedPage"));
+            int pageSize = Integer.parseInt(request.getParameter("pageSize"));
 
-        DataSource dataSource = (DataSource) this.getServletContext().getAttribute("dataSource");
-        Connection connection = null;
-        try {
-            connection = dataSource.getConnection();
-            ImageService imageService = new ImageService(connection);
+            DataSource dataSource = (DataSource) this.getServletContext().getAttribute("dataSource");
+            Connection connection = null;
+            try {
+                connection = dataSource.getConnection();
+                ImageService imageService = new ImageService(connection);
             SearchResult searchResult = imageService.search(howToSearch, howToOrder, input, requestedPage, pageSize);
 
             Object s = JSON.toJSON(searchResult);
@@ -57,6 +64,32 @@ public class ImageServlet extends HttpServlet {
 
         }
 
+
+    }
+
+    public void myPhoto(HttpServletRequest request, HttpServletResponse response) {
+        DataSource dataSource = (DataSource) this.getServletContext().getAttribute("dataSource");
+        Connection connection = null;
+        try {
+            connection = dataSource.getConnection();
+            UserService userService = new UserService(connection, request);
+            User user = userService.tryAutoLogin();
+            if (user == null) return;
+
+            int requestedPage = Integer.parseInt(request.getParameter("requestedPage"));
+            int pageSize = Integer.parseInt(request.getParameter("pageSize"));
+            ImageService imageService = new ImageService(connection);
+
+            SearchResult searchResult = imageService.getMyPhotos(user, requestedPage, pageSize);
+
+            PrintWriter out = response.getWriter();
+            out.println(JSON.toJSON(searchResult));
+
+            DbUtils.close(connection);
+
+        } catch (Exception ignored) {
+
+        }
 
     }
 }

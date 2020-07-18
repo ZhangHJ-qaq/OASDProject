@@ -1,5 +1,6 @@
 package com.haojie.servlet.otherServlet;
 
+import com.alibaba.fastjson.JSON;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -7,6 +8,7 @@ import com.haojie.bean.User;
 import com.haojie.config.Config;
 import com.haojie.dao.userDao.UserDao;
 import com.haojie.dao.userDao.UserDaoImpl;
+import com.haojie.others.RegisterLoginResult;
 import com.haojie.service.UserService;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import org.apache.commons.dbutils.DbUtils;
@@ -67,18 +69,15 @@ public class UserServlet extends HttpServlet {
         DataSource dataSource = (DataSource) this.getServletContext().getAttribute("dataSource");
         Connection connection = dataSource.getConnection();
         UserService userService = new UserService(connection, request);
-        String registerResult = userService.register(
+        RegisterLoginResult registerResult = userService.register(
                 request.getParameter("username"), request.getParameter("email"), request.getParameter("password1"),
                 request.getParameter("password2"), request.getParameter("captcha")
         );
         DbUtils.close(connection);
 
 
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("registerResult", registerResult);
-
         PrintWriter out = response.getWriter();
-        out.println(jsonObject);
+        out.println(JSON.toJSON(registerResult));
     }
 
     /**
@@ -92,14 +91,12 @@ public class UserServlet extends HttpServlet {
         DataSource dataSource = (DataSource) this.getServletContext().getAttribute("dataSource");
         Connection connection = dataSource.getConnection();
         UserService userService = new UserService(connection, request);
-        String loginResult = userService.tryLogin(request.getParameter("username"), request.getParameter("password"), request.getParameter("captcha"));
+        RegisterLoginResult loginResult = userService.tryLogin(request.getParameter("username"), request.getParameter("password"), request.getParameter("captcha"));
         DbUtils.close(connection);
 
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("loginResult", loginResult);
-
         PrintWriter out = response.getWriter();
-        out.println(jsonObject);
+        Object o = JSON.toJSON(loginResult);
+        out.println(o);
 
     }
 }

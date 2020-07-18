@@ -39,7 +39,7 @@ public class UserService {
      * @return
      * @throws SQLException
      */
-    public String register(String username, String email, String password1, String password2, String captchaInput) {
+    public RegisterLoginResult register(String username, String email, String password1, String password2, String captchaInput) {
         try {
             //在后端检查用户的各项输入是否符合要求
             if (!MyUtils.cleanXSS(username).equals(username)
@@ -47,24 +47,24 @@ public class UserService {
                     || !MyUtils.cleanXSS(password1).equals(password1)
                     || !MyUtils.cleanXSS(password2).equals(password2)
             ) {
-                return "注册失败";
+                return new RegisterLoginResult(false, "注册失败");
             }
             if (!captchaInput.equals((String) httpSession.getAttribute("captcha"))) {
-                return "验证码输入错误";
+                return new RegisterLoginResult(false, "验证码输入错误");
             }
 
             if (!(username.length() >= 4 && username.length() <= 15)) {
                 //如果用户名长度不符合要求
-                return "用户名长度必须在4-15位之间！";
+                return new RegisterLoginResult(false, "用户名长度必须在4-15位之间");
             }
             if (!password1.equals(password2)) {
-                return "两次密码输入不一致";
+                return new RegisterLoginResult(false, "两次密码输入不一致");
             }
             if (!(password1.length() >= 6 && password1.length() <= 12)) {
-                return "密码必须在6-12位之间";
+                return new RegisterLoginResult(false, "密码必须在6-12位之间");
             }
             if (!email.matches("([A-Za-z0-9_\\-\\.])+\\@([A-Za-z0-9_\\-\\.])+\\.([A-Za-z]{2,4})")) {
-                return "邮箱格式不符合要求";
+                return new RegisterLoginResult(false, "邮箱格式不符合要求");
             }
 
             //从数据库连接池里得到连接
@@ -91,9 +91,9 @@ public class UserService {
             if (result.isSuccess()) {
                 httpSession.setAttribute("username", username);
             }
-            return result.getInfo();
+            return result;
         } catch (Exception e) {
-            return "注册失败";
+            return new RegisterLoginResult(false, "注册失败");
         }
 
 
@@ -107,11 +107,11 @@ public class UserService {
      * @param captchaInput
      * @return
      */
-    public String tryLogin(String username, String password, String captchaInput) {
+    public RegisterLoginResult tryLogin(String username, String password, String captchaInput) {
         try {
             //检查用户的输入验证码是否正确
             if (!captchaInput.equals((String) httpSession.getAttribute("captcha"))) {
-                return "验证码输入错误";
+                return new RegisterLoginResult(false, "验证码输入错误");
             }
 
             //得到数据库连接
@@ -128,9 +128,9 @@ public class UserService {
             }
 
             DbUtils.close(connection);
-            return result.getInfo();
+            return result;
         } catch (Exception e) {
-            return "登陆失败";
+            return new RegisterLoginResult(false, "登陆失败");
         }
 
 

@@ -171,8 +171,8 @@ class RegisterPageClass {
             $.post("UserServlet?method=register", arrayToBeSubmitted)
                 .done(function (data) {
                     let object = JSON.parse(data);
-                    alert(object['registerResult']);
-                    if (object['registerResult'] === "注册成功") {
+                    alert(object['info']);
+                    if (object['success']) {
                         location.assign("index");
                     }
                 })

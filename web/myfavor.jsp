@@ -1,3 +1,5 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,6 +11,8 @@
     <link rel="stylesheet" href="css/myphoto_myfavor.css">
     <script src="libraries/jQuery/jquery-3.5.1.js"></script>
     <script src="libraries/bootstrap-4.5.0-dist/js/bootstrap.js"></script>
+    <script src="js/class/MyFavorPage.class.js"></script>
+    <script src="js/myfavor.js"></script>
 </head>
 <body>
 
@@ -31,18 +35,31 @@
                 <a class="nav-link" href="#">搜索</a>
             </li>
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-                   aria-haspopup="true" aria-expanded="false">
-                    个人中心
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="#">我的收藏</a>
-                    <a class="dropdown-item" href="#">上传</a>
-                    <a class="dropdown-item" href="#">我的图片</a>
-                    <a class="dropdown-item" href="#">我的好友</a>
-                    <a class="dropdown-item" href="#">个人设置</a>
-                    <a class="dropdown-item" href="#">退出登录</a>
-                </div>
+                <c:if test="${requestScope.user!=null}">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                       data-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false">
+                            ${requestScope.user.username}的个人中心
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="myfavor">我的收藏</a>
+                        <a class="dropdown-item" href="upload">上传</a>
+                        <a class="dropdown-item" href="myphoto">我的图片</a>
+                        <a class="dropdown-item" href="myfriend">我的好友</a>
+                        <a class="dropdown-item" href="setting">个人设置</a>
+                        <a class="dropdown-item" href="logout">退出登录</a>
+                    </div>
+                </c:if>
+                <c:if test="${requestScope.user==null}">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                       data-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false">
+                        未登录
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="login">登录</a>
+                    </div>
+                </c:if>
             </li>
         </ul>
     </div>
@@ -53,7 +70,7 @@
         <div class="card-header">
             我的收藏
         </div>
-        <div class="card-body">
+        <div class="card-body" id="imageArea">
             <div class="media">
                 <a> <img class="mr-3" src="..." alt="Generic placeholder image">
                 </a>
@@ -107,9 +124,8 @@
         </div>
     </div>
 
-
     <nav aria-label="Page navigation example">
-        <ul class="pagination">
+        <ul class="pagination" id="pagination">
             <li class="page-item">
                 <a class="page-link" href="#" aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
