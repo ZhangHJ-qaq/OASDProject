@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="css/search.css">
     <script src="libraries/jQuery/jquery-3.5.1.js"></script>
     <script src="libraries/bootstrap-4.5.0-dist/js/bootstrap.js"></script>
+    <script src="js/class/PageWithPagination.js"></script>
     <script src="js/class/SearchPage.class.js"></script>
     <script src="js/search.js"></script>
 </head>

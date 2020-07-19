@@ -2,6 +2,9 @@ package com.haojie.bean;
 
 import java.sql.Date;
 
+/**
+ * Image类 是bean
+ */
 public class Image {
     private int ImageID;
     private String title;
@@ -9,12 +12,29 @@ public class Image {
     private double longitude;
     private double latitude;
     private int cityCode;
+    private String AsciiName;
     private String Country_RegionCodeISO;
+    private String Country_RegionName;
     private int uid;
     private String path;
     private String content;
     private Date dateReleased;
     private String username;
+    private int favorCount;
+
+
+
+    public void setCountry_RegionName(String country_RegionName) {
+        Country_RegionName = country_RegionName;
+    }
+
+    public int getFavorCount() {
+        return favorCount;
+    }
+
+    public void setFavorCount(int favorCount) {
+        this.favorCount = favorCount;
+    }
 
     public String getUsername() {
         return username;
@@ -24,23 +44,21 @@ public class Image {
         this.username = userName;
     }
 
-    public Image(int imageID, String title, String description, double longitude, double latitude, int cityCode, String country_RegionCodeISO, int uid, String path, String content, Date dateReleased, String username) {
-        ImageID = imageID;
-        this.title = title;
-        this.description = description;
-        this.longitude = longitude;
-        this.latitude = latitude;
-        this.cityCode = cityCode;
-        Country_RegionCodeISO = country_RegionCodeISO;
-        this.uid = uid;
-        this.path = path;
-        this.content = content;
-        this.dateReleased = dateReleased;
-        this.username = username;
+
+    public String getCountry_RegionName() {
+        return Country_RegionName;
     }
 
     public Image() {
 
+    }
+
+    public String getAsciiName() {
+        return AsciiName;
+    }
+
+    public void setAsciiName(String asciiName) {
+        AsciiName = asciiName;
     }
 
     public int getImageID() {

@@ -12,6 +12,11 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
+
+/**
+ * 通用的DAO层
+ * @param <T>
+ */
 public class GenericDao<T> {
     QueryRunner queryRunner = null;
     Class cls = null;

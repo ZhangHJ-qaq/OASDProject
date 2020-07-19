@@ -3,6 +3,9 @@ package com.haojie.bean;
 import java.sql.Date;
 import java.sql.Timestamp;
 
+/**
+ * User类 是bean
+ */
 public class User {
     private int uid;
     private String username;

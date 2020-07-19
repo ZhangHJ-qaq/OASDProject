@@ -1,11 +1,22 @@
 package com.haojie.service;
 
+import com.haojie.bean.Image;
+import com.haojie.bean.ImageFavor;
 import com.haojie.bean.User;
+import com.haojie.dao.ImageFavorDao.ImageFavorDao;
+import com.haojie.dao.ImageFavorDao.ImageFavorDaoImpl;
+import com.haojie.dao.imageDao.ImageDao;
+import com.haojie.dao.imageDao.ImageDaoImpl;
+import com.haojie.dao.userDao.UserDao;
 import com.haojie.dao.userDao.UserDaoImpl;
-import com.haojie.others.RegisterLoginResult;
+import com.haojie.others.ActionResult;
 import com.haojie.utils.MD5Utils;
 import com.haojie.utils.MyUtils;
 import org.apache.commons.dbutils.DbUtils;
+import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.ResultSetHandler;
+import org.apache.commons.dbutils.handlers.BeanHandler;
+import sun.plugin2.main.server.ResultHandler;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -13,6 +24,7 @@ import java.security.SecureRandom;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * 用户的业务层
@@ -30,16 +42,14 @@ public class UserService {
 
     /**
      * 尝试用户的注册
-     *
-     * @param username
-     * @param email
-     * @param password1
-     * @param password2
-     * @param captchaInput
-     * @return
-     * @throws SQLException
+     * @param username 用户名
+     * @param email 邮箱
+     * @param password1 密码1
+     * @param password2 密码2
+     * @param captchaInput 验证码输入
+     * @return ActionResult对象
      */
-    public RegisterLoginResult register(String username, String email, String password1, String password2, String captchaInput) {
+    public ActionResult register(String username, String email, String password1, String password2, String captchaInput) {
         try {
             //在后端检查用户的各项输入是否符合要求
             if (!MyUtils.cleanXSS(username).equals(username)
@@ -47,24 +57,24 @@ public class UserService {
                     || !MyUtils.cleanXSS(password1).equals(password1)
                     || !MyUtils.cleanXSS(password2).equals(password2)
             ) {
-                return new RegisterLoginResult(false, "注册失败");
+                return new ActionResult(false, "注册失败");
             }
             if (!captchaInput.equals((String) httpSession.getAttribute("captcha"))) {
-                return new RegisterLoginResult(false, "验证码输入错误");
+                return new ActionResult(false, "验证码输入错误");
             }
 
             if (!(username.length() >= 4 && username.length() <= 15)) {
                 //如果用户名长度不符合要求
-                return new RegisterLoginResult(false, "用户名长度必须在4-15位之间");
+                return new ActionResult(false, "用户名长度必须在4-15位之间");
             }
             if (!password1.equals(password2)) {
-                return new RegisterLoginResult(false, "两次密码输入不一致");
+                return new ActionResult(false, "两次密码输入不一致");
             }
             if (!(password1.length() >= 6 && password1.length() <= 12)) {
-                return new RegisterLoginResult(false, "密码必须在6-12位之间");
+                return new ActionResult(false, "密码必须在6-12位之间");
             }
             if (!email.matches("([A-Za-z0-9_\\-\\.])+\\@([A-Za-z0-9_\\-\\.])+\\.([A-Za-z]{2,4})")) {
-                return new RegisterLoginResult(false, "邮箱格式不符合要求");
+                return new ActionResult(false, "邮箱格式不符合要求");
             }
 
             //从数据库连接池里得到连接
@@ -81,7 +91,7 @@ public class UserService {
             request.changeSessionId();
 
             //尝试在数据层里插入用户，返回结果
-            RegisterLoginResult result = userDao.insertAUser(new User(username, email, saltedPassword, 1,
+            ActionResult result = userDao.insertAUser(new User(username, email, saltedPassword, 1,
                     new Timestamp(System.currentTimeMillis()),
                     new Timestamp(System.currentTimeMillis()),
                     salt + "", httpSession.getId()
@@ -93,7 +103,7 @@ public class UserService {
             }
             return result;
         } catch (Exception e) {
-            return new RegisterLoginResult(false, "注册失败");
+            return new ActionResult(false, "注册失败");
         }
 
 
@@ -102,16 +112,16 @@ public class UserService {
     /**
      * 尝试用户登录
      *
-     * @param username
-     * @param password
-     * @param captchaInput
-     * @return
+     * @param username 用户名
+     * @param password 密码
+     * @param captchaInput 验证码输入
+     * @return 结果对象
      */
-    public RegisterLoginResult tryLogin(String username, String password, String captchaInput) {
+    public ActionResult tryLogin(String username, String password, String captchaInput) {
         try {
             //检查用户的输入验证码是否正确
             if (!captchaInput.equals((String) httpSession.getAttribute("captcha"))) {
-                return new RegisterLoginResult(false, "验证码输入错误");
+                return new ActionResult(false, "验证码输入错误");
             }
 
             //得到数据库连接
@@ -122,7 +132,7 @@ public class UserService {
             request.changeSessionId();
 
             //尝试根据用户提供的信息登录，并返回结果
-            RegisterLoginResult result = userDao.tryLogin(username, password, request.getSession().getId());
+            ActionResult result = userDao.tryLogin(username, password, request.getSession().getId());
             if (result.isSuccess()) {
                 httpSession.setAttribute("username", username);
             }
@@ -130,9 +140,8 @@ public class UserService {
             DbUtils.close(connection);
             return result;
         } catch (Exception e) {
-            return new RegisterLoginResult(false, "登陆失败");
+            return new ActionResult(false, "登陆失败");
         }
-
 
     }
 
@@ -140,7 +149,7 @@ public class UserService {
     /**
      * 根据session里面的username和sessionid，尝试自动登录
      *
-     * @return
+     * @return 用户对象
      */
     public User tryAutoLogin() {
         try {
@@ -154,6 +163,72 @@ public class UserService {
         }
 
 
+    }
+
+    /**
+     * 检查用户是否已经收藏了这个图片
+     * @param user 用户对象
+     * @param imageID 图片id
+     * @return true代表收藏了 false代表没收藏
+     */
+    public boolean hasFavoredTheImage(User user, int imageID) {
+        try {
+            ImageFavorDao imageFavorDao = new ImageFavorDaoImpl(this.connection);
+            return imageFavorDao.hasLikedTheImage(user, imageID);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+
+    /**
+     * 用户收藏图片的函数
+     * @param user 用户对象
+     * @param imageID 图片id
+     * @return 结果对象
+     */
+    public ActionResult favorImage(User user, int imageID) {
+        if (user == null) return new ActionResult(false, "未登录的用户不可以收藏图片");
+        ImageDao imageDao = new ImageDaoImpl(connection);
+        if (!imageDao.imageExists(imageID)) return new ActionResult(false, "图片不存在");
+        try {
+            boolean hasFavoredTheImage = this.hasFavoredTheImage(user, imageID);
+            if (hasFavoredTheImage) return new ActionResult(false, "你已经收藏了这个图片");
+
+            ImageFavorDao imageFavorDao = new ImageFavorDaoImpl(connection);
+
+            boolean success = imageFavorDao.likeImage(user, imageID);
+            if (success) return new ActionResult(true, "收藏成功");
+            return new ActionResult(false, "收藏失败");
+
+        } catch (Exception e) {
+            return new ActionResult(false, "收藏失败");
+        }
+    }
+
+    /**
+     * 用户取消收藏图片的函数
+     * @param user 用户对象
+     * @param imageID 图片id
+     * @return 结果对象
+     */
+    public ActionResult unfavorImage(User user, int imageID) {
+        if (user == null) return new ActionResult(false, "未登录的用户不可以取消收藏图片");
+        ImageDao imageDao = new ImageDaoImpl(connection);
+        if (!imageDao.imageExists(imageID)) return new ActionResult(false, "图片不存在");
+        try {
+            boolean hasFavoredTheImage = this.hasFavoredTheImage(user, imageID);
+            if (!hasFavoredTheImage) return new ActionResult(false, "你还没有收藏这个图片，不能取消收藏");
+
+            ImageFavorDao imageFavorDao = new ImageFavorDaoImpl(connection);
+
+            boolean success = imageFavorDao.unlikeImage(user, imageID);
+            if (success) return new ActionResult(true, "取消收藏成功");
+            return new ActionResult(false, "取消收藏失败");
+
+        } catch (Exception e) {
+            return new ActionResult(false, "取消收藏失败");
+        }
     }
 
 

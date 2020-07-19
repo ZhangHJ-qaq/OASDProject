@@ -4,6 +4,9 @@ import com.haojie.bean.Image;
 
 import java.util.List;
 
+/**
+ * 封装了搜索图片得到的结果的对象。imageList为图片列表，maxPage表示最大页数，respondedPage表示相应页数
+ */
 public class SearchResult {
     private List<Image> imageList;
     private int respondedPage;

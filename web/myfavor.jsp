@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="css/myphoto_myfavor.css">
     <script src="libraries/jQuery/jquery-3.5.1.js"></script>
     <script src="libraries/bootstrap-4.5.0-dist/js/bootstrap.js"></script>
+    <script src="js/class/PageWithPagination.js"></script>
     <script src="js/class/MyFavorPage.class.js"></script>
     <script src="js/myfavor.js"></script>
 </head>
@@ -29,10 +30,10 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="nav-link" href="#">主页</a>
+                <a class="nav-link" href="index">主页</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">搜索</a>
+                <a class="nav-link" href="search">搜索</a>
             </li>
             <li class="nav-item dropdown">
                 <c:if test="${requestScope.user!=null}">
@@ -65,80 +66,20 @@
     </div>
 </nav>
 
+
 <main class="flex-container">
     <div class="card flex-24-24">
         <div class="card-header">
             我的收藏
         </div>
         <div class="card-body" id="imageArea">
-            <div class="media">
-                <a> <img class="mr-3" src="..." alt="Generic placeholder image">
-                </a>
-                <div class="media-body">
-                    <h5 class="mt-0">Media heading</h5>
-                    Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras
-                    purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi
-                    vulputate fringilla. Donec lacinia congue felis in faucibus.
-                </div>
-            </div>
-            <div class="media">
-                <a> <img class="mr-3" src="..." alt="Generic placeholder image">
-                </a>
-                <div class="media-body">
-                    <h5 class="mt-0">Media heading</h5>
-                    Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras
-                    purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi
-                    vulputate fringilla. Donec lacinia congue felis in faucibus.
-                </div>
-            </div>
-            <div class="media">
-                <a> <img class="mr-3" src="..." alt="Generic placeholder image">
-                </a>
-                <div class="media-body">
-                    <h5 class="mt-0">Media heading</h5>
-                    Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras
-                    purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi
-                    vulputate fringilla. Donec lacinia congue felis in faucibus.
-                </div>
-            </div>
-            <div class="media">
-                <a> <img class="mr-3" src="..." alt="Generic placeholder image">
-                </a>
-                <div class="media-body">
-                    <h5 class="mt-0">Media heading</h5>
-                    Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras
-                    purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi
-                    vulputate fringilla. Donec lacinia congue felis in faucibus.
-                </div>
-            </div>
-            <div class="media">
-                <a> <img class="mr-3" src="..." alt="Generic placeholder image">
-                </a>
-                <div class="media-body">
-                    <h5 class="mt-0">Media heading</h5>
-                    Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras
-                    purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi
-                    vulputate fringilla. Donec lacinia congue felis in faucibus.
-                </div>
-            </div>
+
         </div>
     </div>
 
     <nav aria-label="Page navigation example">
         <ul class="pagination" id="pagination">
-            <li class="page-item">
-                <a class="page-link" href="#" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
-            </li>
-            <li class="page-item"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item">
-                <a class="page-link" href="#" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-            </li>
+
         </ul>
     </nav>
 </main>

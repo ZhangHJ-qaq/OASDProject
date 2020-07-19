@@ -28,6 +28,7 @@ public class ImageDaoImpl extends GenericDao<Image> implements ImageDao {
         }
     }
 
+
     @Override
     public List<Image> getMostFreshNImages(int n) {
         try {
@@ -42,6 +43,7 @@ public class ImageDaoImpl extends GenericDao<Image> implements ImageDao {
         }
 
     }
+
 
     @Override
     public List<Image> search(String howToSearch, String howToOrder, String input) {
@@ -81,6 +83,7 @@ public class ImageDaoImpl extends GenericDao<Image> implements ImageDao {
 
     }
 
+
     @Override
     public List<Image> getMyPhotos(User user) {
         String sql = "select * from travelimage where uid=?";
@@ -91,4 +94,46 @@ public class ImageDaoImpl extends GenericDao<Image> implements ImageDao {
             return null;
         }
     }
+
+    @Override
+    public List<Image> getFavor(User user) {
+        String sql = "select travelimage.ImageID,Title,Description,Longitude,Latitude,CityCode,Country_RegionCodeISO,travelimage.UID,PATH,Content,DateReleased from travelimagefavor inner join travelimage  on travelimagefavor.ImageID = travelimage.ImageID    where travelimagefavor.UID=?";
+        try {
+            List<Image> imageList = this.queryForList(connection, sql, user.getUid());
+            return imageList;
+        } catch (SQLException sqlException) {
+            return null;
+
+        }
+    }
+
+    @Override
+    public Image getImage(int imageID) {
+        String sql = "select\n" +
+                "travelimage.ImageID,count(travelimagefavor.ImageID) as favorCount,Title,Description,\n" +
+                "       travelimage.Latitude,travelimage.Longitude,\n" +
+                "       CityCode,AsciiName,travelimage.Country_RegionCodeISO,geocountries_regions.Country_RegionName,PATH,Content,DateReleased,UserName\n" +
+                "from\n" +
+                "(travelimagefavor right join travelimage on travelimage.ImageID=travelimagefavor.ImageID)\n" +
+                "left join geocities on CityCode=geocities.GeoNameID\n" +
+                "left join geocountries_regions on travelimage.Country_RegionCodeISO=geocountries_regions.ISO\n" +
+                "left join traveluser on travelimage.UID=traveluser.UID\n" +
+                "where travelimage.ImageID=?\n" +
+                "group by ImageID";
+        try {
+            Image image = this.queryForOne(connection, sql, imageID);
+            return image;
+        } catch (SQLException sqlException) {
+            return null;
+        }
+
+
+    }
+
+    @Override
+    public boolean imageExists(int imageID) {
+        return this.getImage(imageID) != null;
+    }
+
+
 }

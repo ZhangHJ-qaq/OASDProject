@@ -1,10 +1,14 @@
 package com.haojie.others;
 
-public class RegisterLoginResult {
+
+/**
+ * 封装了各种操作（如：登录，注册，收藏图片）的结果对象
+ */
+public class ActionResult {
     private boolean success;
     private String info;
 
-    public RegisterLoginResult(boolean success, String info) {
+    public ActionResult(boolean success, String info) {
         this.success = success;
         this.info = info;
     }

@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="css/myphoto_myfavor.css">
     <script src="libraries/jQuery/jquery-3.5.1.js"></script>
     <script src="libraries/bootstrap-4.5.0-dist/js/bootstrap.js"></script>
+    <script src="js/class/PageWithPagination.js"></script>
     <script src="js/class/MyPhotoPage.class.js"></script>
     <script src="js/myphoto.js"></script>
 </head>

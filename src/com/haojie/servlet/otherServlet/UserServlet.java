@@ -1,20 +1,12 @@
 package com.haojie.servlet.otherServlet;
 
 import com.alibaba.fastjson.JSON;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.haojie.bean.User;
-import com.haojie.config.Config;
-import com.haojie.dao.userDao.UserDao;
-import com.haojie.dao.userDao.UserDaoImpl;
-import com.haojie.others.RegisterLoginResult;
+import com.haojie.others.ActionResult;
 import com.haojie.service.UserService;
-import com.mchange.v2.c3p0.ComboPooledDataSource;
 import org.apache.commons.dbutils.DbUtils;
 
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -38,21 +30,26 @@ public class UserServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        if (request.getParameter("method").equals("register")) {
-            try {
+        try {
+            if (request.getParameter("method").equals("register")) {
+
                 register(request, response);
-            } catch (SQLException sqlException) {
-                sqlException.printStackTrace();
+
+                return;
             }
-            return;
-        }
-        if (request.getParameter("method").equals("login")) {
-            try {
+            if (request.getParameter("method").equals("login")) {
+
                 login(request, response);
-            } catch (SQLException sqlException) {
-                sqlException.printStackTrace();
+
+                return;
             }
-            return;
+            if (request.getParameter("method").equals("unfavor")) {
+                unfavor(request, response);
+                return;
+
+            }
+        } catch (Exception ignored) {
+
         }
 
 
@@ -69,7 +66,7 @@ public class UserServlet extends HttpServlet {
         DataSource dataSource = (DataSource) this.getServletContext().getAttribute("dataSource");
         Connection connection = dataSource.getConnection();
         UserService userService = new UserService(connection, request);
-        RegisterLoginResult registerResult = userService.register(
+        ActionResult registerResult = userService.register(
                 request.getParameter("username"), request.getParameter("email"), request.getParameter("password1"),
                 request.getParameter("password2"), request.getParameter("captcha")
         );
@@ -91,12 +88,35 @@ public class UserServlet extends HttpServlet {
         DataSource dataSource = (DataSource) this.getServletContext().getAttribute("dataSource");
         Connection connection = dataSource.getConnection();
         UserService userService = new UserService(connection, request);
-        RegisterLoginResult loginResult = userService.tryLogin(request.getParameter("username"), request.getParameter("password"), request.getParameter("captcha"));
+        ActionResult loginResult = userService.tryLogin(request.getParameter("username"), request.getParameter("password"), request.getParameter("captcha"));
         DbUtils.close(connection);
 
         PrintWriter out = response.getWriter();
         Object o = JSON.toJSON(loginResult);
         out.println(o);
+
+    }
+
+    /**
+     * 处理用户的取消收藏请求
+     * @param httpServletRequest
+     * @param httpServletResponse
+     */
+    private void unfavor(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        DataSource dataSource = (DataSource) this.getServletContext().getAttribute("dataSource");
+        Connection connection = null;
+        try {
+            connection = dataSource.getConnection();
+            UserService userService = new UserService(connection, httpServletRequest);
+            User user = userService.tryAutoLogin();
+            ActionResult actionResult = userService.unfavorImage(user, Integer.parseInt(httpServletRequest.getParameter("imageID")));
+
+            PrintWriter out = httpServletResponse.getWriter();
+            out.println(JSON.toJSON(actionResult));
+
+        } catch (Exception ignored) {
+
+        }
 
     }
 }

@@ -61,5 +61,14 @@
         <url-pattern>/myfavorjsp</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>detailsjsp</servlet-name>
+        <jsp-file>/details.jsp</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>detailsjsp</servlet-name>
+        <url-pattern>/detailsjsp</url-pattern>
+    </servlet-mapping>
+
 
 </web-app>

@@ -2,6 +2,7 @@ package com.haojie.servlet.pageServlet;
 
 import com.haojie.bean.User;
 import com.haojie.dao.userDao.UserDaoImpl;
+import com.haojie.service.UserService;
 import org.apache.commons.dbutils.DbUtils;
 
 import javax.servlet.ServletException;
@@ -25,8 +26,8 @@ public class RegisterPageServlet extends HttpServlet {
         Connection connection = null;
         try {
             connection = dataSource.getConnection();
-            UserDaoImpl userDao = new UserDaoImpl(connection);
-            User user = userDao.tryAutoLogin((String) request.getSession().getAttribute("username"), request.getSession().getId());
+            UserService userService = new UserService(connection, request);
+            User user = userService.tryAutoLogin();
             if (user == null) {
                 request.getRequestDispatcher("/registerjsp").forward(request, response);
                 return;

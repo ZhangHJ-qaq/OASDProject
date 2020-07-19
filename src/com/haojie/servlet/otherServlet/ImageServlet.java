@@ -6,6 +6,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.haojie.bean.User;
+import com.haojie.dao.userDao.UserDao;
+import com.haojie.dao.userDao.UserDaoImpl;
 import com.haojie.others.SearchResult;
 import com.haojie.service.ImageService;
 import com.haojie.service.UserService;
@@ -23,6 +25,10 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+
+/**
+ * 和图片有关的servlet 用来处理和转发各种和图片有关的Ajax请求
+ */
 @WebServlet("/ImageServlet")
 public class ImageServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -32,6 +38,10 @@ public class ImageServlet extends HttpServlet {
         }
         if (request.getParameter("method").equals("myphoto")) {
             myPhoto(request, response);
+            return;
+        }
+        if (request.getParameter("method").equals("myfavor")) {
+            myfavor(request, response);
         }
 
     }
@@ -40,18 +50,23 @@ public class ImageServlet extends HttpServlet {
         doPost(request, response);
     }
 
+    /**
+     * 和图片搜索有关的ajax请求的处理
+     * @param request
+     * @param response
+     */
     private void pureSearch(HttpServletRequest request, HttpServletResponse response) {
         String howToSearch = request.getParameter("howToSearch");
-            String howToOrder = request.getParameter("howToOrder");
-            String input = request.getParameter("input");
-            int requestedPage = Integer.parseInt(request.getParameter("requestedPage"));
-            int pageSize = Integer.parseInt(request.getParameter("pageSize"));
+        String howToOrder = request.getParameter("howToOrder");
+        String input = request.getParameter("input");
+        int requestedPage = Integer.parseInt(request.getParameter("requestedPage"));
+        int pageSize = Integer.parseInt(request.getParameter("pageSize"));
 
-            DataSource dataSource = (DataSource) this.getServletContext().getAttribute("dataSource");
-            Connection connection = null;
-            try {
-                connection = dataSource.getConnection();
-                ImageService imageService = new ImageService(connection);
+        DataSource dataSource = (DataSource) this.getServletContext().getAttribute("dataSource");
+        Connection connection = null;
+        try {
+            connection = dataSource.getConnection();
+            ImageService imageService = new ImageService(connection);
             SearchResult searchResult = imageService.search(howToSearch, howToOrder, input, requestedPage, pageSize);
 
             Object s = JSON.toJSON(searchResult);
@@ -67,6 +82,11 @@ public class ImageServlet extends HttpServlet {
 
     }
 
+    /**
+     * 和查看我的图片有关的ajax请求的处理
+     * @param request
+     * @param response
+     */
     public void myPhoto(HttpServletRequest request, HttpServletResponse response) {
         DataSource dataSource = (DataSource) this.getServletContext().getAttribute("dataSource");
         Connection connection = null;
@@ -92,4 +112,37 @@ public class ImageServlet extends HttpServlet {
         }
 
     }
+
+    /**
+     * 处理我的收藏的ajax请求
+     * @param request
+     * @param response
+     */
+    public void myfavor(HttpServletRequest request, HttpServletResponse response) {
+        DataSource dataSource = (DataSource) this.getServletContext().getAttribute("dataSource");
+        Connection connection = null;
+        try {
+            connection = dataSource.getConnection();
+            UserService userService = new UserService(connection, request);
+
+            User user = userService.tryAutoLogin();
+            if (user == null) return;
+
+            int requestedPage = Integer.parseInt(request.getParameter("requestedPage"));
+            int pageSize = Integer.parseInt(request.getParameter("pageSize"));
+            ImageService imageService = new ImageService(connection);
+
+            SearchResult searchResult = imageService.getFavor(user, requestedPage, pageSize);
+
+            PrintWriter out = response.getWriter();
+
+            out.println(JSON.toJSON(searchResult));
+
+        } catch (Exception ignored) {
+
+        }
+
+    }
+
+
 }

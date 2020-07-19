@@ -1,7 +1,10 @@
 package com.haojie.servlet.pageServlet;
 
+import com.haojie.bean.Image;
 import com.haojie.bean.User;
 import com.haojie.dao.userDao.UserDaoImpl;
+import com.haojie.others.ActionResult;
+import com.haojie.service.ImageService;
 import com.haojie.service.UserService;
 import org.apache.commons.dbutils.DbUtils;
 
@@ -15,8 +18,8 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-@WebServlet("/login")
-public class LoginPageServlet extends HttpServlet {
+@WebServlet("/details")
+public class DetailPageServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doGet(request, response);
     }
@@ -26,13 +29,33 @@ public class LoginPageServlet extends HttpServlet {
         Connection connection = null;
         try {
             connection = dataSource.getConnection();
+
             UserService userService = new UserService(connection, request);
             User user = userService.tryAutoLogin();
-            if (user == null) {
-                request.getRequestDispatcher("/loginjsp").forward(request, response);
-                return;
+
+            request.setAttribute("user", user);
+
+            int imageID = Integer.parseInt(request.getParameter("imageID"));
+            String action = request.getParameter("action") == null ? "" : request.getParameter("action");
+            ActionResult actionResult = null;
+            if (action.equals("favor")) {
+                actionResult = userService.favorImage(user, imageID);
+            } else if (action.equals("unfavor")) {
+                actionResult = userService.unfavorImage(user, imageID);
             }
-            request.getRequestDispatcher("/index").forward(request, response);
+
+            request.setAttribute("actionResult", actionResult);
+
+            boolean hasFavoredImage = userService.hasFavoredTheImage(user, imageID);
+            request.setAttribute("hasFavoredImage", hasFavoredImage);
+
+            ImageService imageService = new ImageService(connection);
+            Image image = imageService.getImage(imageID);
+
+            request.setAttribute("image", image);
+
+            request.getRequestDispatcher("detailsjsp").forward(request, response);
+
             DbUtils.close(connection);
 
         } catch (SQLException sqlException) {
