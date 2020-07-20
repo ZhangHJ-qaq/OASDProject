@@ -4,6 +4,8 @@ class UploadPageClass {
         this.submitButton = $("#submitButton");
         this.photoInput = $("#photoInput");
         this.photoPreviewArea = $("#photoPreviewArea");
+        this.countrySelect = $("#countrySelect");
+        this.citySelect = $("#citySelect");
     }
 
     setPhotoPreview() {
@@ -43,12 +45,12 @@ class UploadPageClass {
                 e.preventDefault();
                 return;
             }
-            if (!formDataObject['theme']) {
+            if (!formDataObject['content']) {
                 alert("你必须填写主题！")
                 e.preventDefault();
                 return;
             }
-            if (!formDataObject['desc']) {
+            if (!formDataObject['description']) {
                 alert("你必须填写照片描述！")
                 e.preventDefault();
                 return;
@@ -63,8 +65,59 @@ class UploadPageClass {
                 e.preventDefault();
                 return;
             }
+
+            //准备上传
+            that.upload();
+
+
         })
     }
 
+    setCountryOnChange() {
+        let that = this;
+        this.countrySelect.change(function () {
+            let iso = that.countrySelect.val();
+            $.post(`CountryCityServlet?method=erjiliandong&iso=${iso}`)
+                .done(function (data) {
+                    that.citySelect.empty();
+                    let cityList = JSON.parse(data);
+                    for (let i = 0; i <= cityList.length - 1; i++) {
+                        that.citySelect.append(
+                            $(`<option value="${cityList[i]['geoNameID']}">${cityList[i]['asciiName']}</option>`)
+                        )
+                    }
+                })
+
+
+        })
+    }
+
+    upload() {
+        let formData = new FormData();
+        formData.append("photo", this.photoInput.get(0).files[0]);//添加文件
+
+        let serializedArray = this.form.serializeArray();
+        for (let i = 0; i <= serializedArray.length - 1; i++) {
+            formData.append(serializedArray[i]['name'], serializedArray[i]['value']);
+        }
+
+        $.ajax({
+            url: 'UserServlet?method=upload',
+            type: 'POST',
+            data: formData,
+            cache: false,
+            processData: false,
+            contentType: false
+        })
+            .done(function (data) {
+                let uploadResult = JSON.parse(data);
+                alert(uploadResult['info']);
+                if(uploadResult['success']){
+                    location.assign("myphoto")
+                }
+            })
+
+
+    }
 
 }

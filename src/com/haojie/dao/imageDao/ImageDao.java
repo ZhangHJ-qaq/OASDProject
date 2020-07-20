@@ -2,6 +2,7 @@ package com.haojie.dao.imageDao;
 
 import com.haojie.bean.Image;
 import com.haojie.bean.User;
+import com.haojie.others.ActionResult;
 
 import java.util.List;
 
@@ -61,6 +62,13 @@ public interface ImageDao {
      * @return 如果存在为true，不存在为false
      */
     public abstract boolean imageExists(int imageID);
+
+    public abstract boolean imageExists(String fileName);
+
+
+    public abstract ActionResult insertImage(User user, Image image);
+
+
 }
 
 

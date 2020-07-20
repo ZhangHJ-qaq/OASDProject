@@ -25,4 +25,9 @@ public class MyUtils {
         }
         return hashMap;
     }
+
+    public static String getExtName(String fileName) {
+        String[] s = fileName.split("\\.");
+        return s[s.length - 1];
+    }
 }

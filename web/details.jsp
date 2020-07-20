@@ -70,9 +70,10 @@
             图片详情
         </div>
         <div class="card-body flex-container-center">
-            <div id="leftColumn" class="flex-14-24">
-                <img src="photos/medium/${requestScope.image.path}" class="zoom"
-                     data-magnify-src="photos/medium/${requestScope.image.path}">
+            <div id="leftColumn" class="flex-14-24 flex-container">
+                <img src="photos/large/${requestScope.image.path}" class="zoom flex-1"
+                     data-magnify-src="photos/large/${requestScope.image.path}">
+                <a href="photos/large/${requestScope.image.path}" class="flex-1">戳这里获得高清原图</a>
             </div>
             <div id="rightColumn" class="flex-10-24 flex-container-center">
                 <ul class="list-group flex-1">

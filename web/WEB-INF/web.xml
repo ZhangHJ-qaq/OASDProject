@@ -70,5 +70,13 @@
         <url-pattern>/detailsjsp</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>uploadjsp</servlet-name>
+        <jsp-file>/upload.jsp</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>uploadjsp</servlet-name>
+        <url-pattern>/uploadjsp</url-pattern>
+    </servlet-mapping>
 
 </web-app>

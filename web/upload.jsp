@@ -1,3 +1,5 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -32,18 +34,31 @@
                 <a class="nav-link" href="#">搜索</a>
             </li>
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-                   aria-haspopup="true" aria-expanded="false">
-                    个人中心
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="#">我的收藏</a>
-                    <a class="dropdown-item" href="#">上传</a>
-                    <a class="dropdown-item" href="#">我的图片</a>
-                    <a class="dropdown-item" href="#">我的好友</a>
-                    <a class="dropdown-item" href="#">个人设置</a>
-                    <a class="dropdown-item" href="#">退出登录</a>
-                </div>
+                <c:if test="${requestScope.user!=null}">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                       data-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false">
+                            ${requestScope.user.username}的个人中心
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="myfavor">我的收藏</a>
+                        <a class="dropdown-item" href="upload">上传</a>
+                        <a class="dropdown-item" href="myphoto">我的图片</a>
+                        <a class="dropdown-item" href="myfriend">我的好友</a>
+                        <a class="dropdown-item" href="setting">个人设置</a>
+                        <a class="dropdown-item" href="logout">退出登录</a>
+                    </div>
+                </c:if>
+                <c:if test="${requestScope.user==null}">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                       data-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false">
+                        未登录
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="login">登录</a>
+                    </div>
+                </c:if>
             </li>
         </ul>
     </div>
@@ -62,18 +77,21 @@
             <label class="flex-1">标题</label>
             <input type="text" class="flex-1 form-control" name="title">
             <label class="flex-1">主题</label>
-            <input type="text" class="flex-1 form-control" name="theme">
+            <input type="text" class="flex-1 form-control" name="content">
             <label class="flex-1">描述</label>
-            <input type="text" class="flex-1 form-control" name="desc">
+            <input type="text" class="flex-1 form-control" name="description">
             <div class="flex-1 flex-container">
-                <select class="flex-8-24 form-control" name="country">
+                <select class="flex-8-24 form-control" name="country" id="countrySelect">
                     <option value="">选择国家</option>
+                    <c:forEach items="${requestScope.countryList}" var="country">
+                        <option value="${country.ISO}">${country.country_RegionName}</option>
+                    </c:forEach>
                 </select>
-                <select class="flex-8-24 form-control" name="city">
+                <select class="flex-8-24 form-control" name="city" id="citySelect">
                     <option value="">选择城市</option>
                 </select>
             </div>
-            <button type="submit" class="flex-1 btn btn-info" id="submitButton">提交</button>
+            <button type="button" class="flex-1 btn btn-info" id="submitButton">提交</button>
         </form>
     </div>
 </main>

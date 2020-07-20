@@ -1,6 +1,7 @@
 package com.haojie.bean;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 
 /**
  * Image类 是bean
@@ -18,11 +19,22 @@ public class Image {
     private int uid;
     private String path;
     private String content;
-    private Date dateReleased;
+    private Timestamp dateReleased;
     private String username;
     private int favorCount;
 
-
+    public Image(String title, String description, double longitude, double latitude, int cityCode, String country_RegionCodeISO, int uid, String path, String content, Timestamp dateReleased) {
+        this.title = title;
+        this.description = description;
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.cityCode = cityCode;
+        Country_RegionCodeISO = country_RegionCodeISO;
+        this.uid = uid;
+        this.path = path;
+        this.content = content;
+        this.dateReleased = dateReleased;
+    }
 
     public void setCountry_RegionName(String country_RegionName) {
         Country_RegionName = country_RegionName;
@@ -141,11 +153,11 @@ public class Image {
         this.content = content;
     }
 
-    public Date getDateReleased() {
+    public Timestamp getDateReleased() {
         return dateReleased;
     }
 
-    public void setDateReleased(Date dateReleased) {
+    public void setDateReleased(Timestamp dateReleased) {
         this.dateReleased = dateReleased;
     }
 }

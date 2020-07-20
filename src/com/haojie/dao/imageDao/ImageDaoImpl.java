@@ -3,10 +3,12 @@ package com.haojie.dao.imageDao;
 import com.haojie.bean.Image;
 import com.haojie.bean.User;
 import com.haojie.dao.genericDao.GenericDao;
+import com.haojie.others.ActionResult;
 import com.sun.org.apache.xml.internal.dtm.ref.DTMDefaultBaseIterators;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.List;
 
 public class ImageDaoImpl extends GenericDao<Image> implements ImageDao {
@@ -133,6 +135,42 @@ public class ImageDaoImpl extends GenericDao<Image> implements ImageDao {
     @Override
     public boolean imageExists(int imageID) {
         return this.getImage(imageID) != null;
+    }
+
+    @Override
+    public ActionResult insertImage(User user, Image image) {
+        if (user == null) {
+            return new ActionResult(false, "没有登陆或登录已过期");
+        }
+        String sql = "insert into travelimage (Title, Description, Latitude, Longitude, CityCode, Country_RegionCodeISO, UID, PATH, Content,\n" +
+                "                         DateReleased)\n" +
+                "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);\n";
+        try {
+            int rowsAffected = this.update(connection, sql,
+                    image.getTitle(), image.getDescription(), image.getLatitude(), image.getLongitude(), image.getCityCode()
+                    , image.getCountry_RegionCodeISO(), image.getUid(), image.getPath(), image.getContent(), new Timestamp(System.currentTimeMillis()));
+            if (rowsAffected > 0) {
+                return new ActionResult(true, "成功");
+            } else {
+                return new ActionResult(false, "失败");
+            }
+
+        } catch (Exception e) {
+            return new ActionResult(false, "失败");
+        }
+
+    }
+
+    @Override
+    public boolean imageExists(String fileName) {
+        String sql = "select * from travelimage where PATH regexp ?";
+        try {
+            List<Image> imageList = this.queryForList(connection, sql, fileName);
+            return imageList.size() > 0;
+
+        } catch (Exception e) {
+            return false;
+        }
     }
 
 
