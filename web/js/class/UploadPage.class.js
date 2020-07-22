@@ -28,40 +28,7 @@ class UploadPageClass {
     setSubmitButtonOnClick() {
         let that = this;
         this.submitButton.click(function (e) {
-            let formDataObject = (function (form) {
-                let o = {};
-                $.each(form.serializeArray(), function (index) {
-                    if (o[this['name']]) {
-                        o[this['name']] = o[this['name']] + "," + this['value'];
-                    } else {
-                        o[this['name']] = this['value'];
-                    }
-                });
-                return o;
-            })(that.form);
-
-            if (!formDataObject['title']) {
-                alert("你必须填写标题！")
-                e.preventDefault();
-                return;
-            }
-            if (!formDataObject['content']) {
-                alert("你必须填写主题！")
-                e.preventDefault();
-                return;
-            }
-            if (!formDataObject['description']) {
-                alert("你必须填写照片描述！")
-                e.preventDefault();
-                return;
-            }
-            if (!formDataObject['country']) {
-                alert("你必须填写国家或地区！")
-                e.preventDefault();
-                return;
-            }
-            if (!formDataObject['city']) {
-                alert("你必须填写城市！");
+            if(!that.checkInfoComplete()){
                 e.preventDefault();
                 return;
             }
@@ -112,12 +79,69 @@ class UploadPageClass {
             .done(function (data) {
                 let uploadResult = JSON.parse(data);
                 alert(uploadResult['info']);
-                if(uploadResult['success']){
+                if (uploadResult['success']) {
                     location.assign("myphoto")
                 }
             })
 
 
+    }
+
+    setCountryOptions(defaultISO) {
+        let that=this;
+        $.post("CountryCityServlet?method=getCountryOptions")
+            .done(function (data) {
+                let countryList = JSON.parse(data);
+                for(let i=0;i<=countryList.length-1;i++){
+
+                    if(defaultISO==countryList[i]['iSO']){
+                        that.countrySelect.append(
+                            `<option value="${countryList[i]['iSO']}" selected>${countryList[i]['country_RegionName']}</option>`
+                        )
+                    }else {
+                        that.countrySelect.append(
+                            `<option value="${countryList[i]['iSO']}">${countryList[i]['country_RegionName']}</option>`
+                        )
+                    }
+
+                }
+            })
+    }
+
+    checkInfoComplete(){
+        let formDataObject = (function (form) {
+            let o = {};
+            $.each(form.serializeArray(), function (index) {
+                if (o[this['name']]) {
+                    o[this['name']] = o[this['name']] + "," + this['value'];
+                } else {
+                    o[this['name']] = this['value'];
+                }
+            });
+            return o;
+        })(this.form);
+
+        if (!formDataObject['title']) {
+            alert("你必须填写标题！")
+            return false;
+        }
+        if (!formDataObject['content']) {
+            alert("你必须填写主题！")
+            return false;
+        }
+        if (!formDataObject['description']) {
+            alert("你必须填写照片描述！")
+            return false;
+        }
+        if (!formDataObject['country']) {
+            alert("你必须填写国家或地区！")
+            return false;
+        }
+        if (!formDataObject['city']) {
+            alert("你必须填写城市！");
+            return false;
+        }
+        return true;
     }
 
 }

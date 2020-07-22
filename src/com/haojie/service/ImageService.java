@@ -188,10 +188,10 @@ public class ImageService {
         return image;
     }
 
-    public ActionResult insertImage(User user, Image image) {
+    public Image getImage(User user, int imageID) {
         ImageDao imageDao = new ImageDaoImpl(connection);
-        if (user == null) return new ActionResult(false, "没有登陆或登录已经过期");
-        return imageDao.insertImage(user, image);
+        if (user == null) return null;
+        return imageDao.getImage(user, imageID);
     }
 
 

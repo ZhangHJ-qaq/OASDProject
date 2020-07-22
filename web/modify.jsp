@@ -4,19 +4,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>我的收藏</title>
+    <title>修改</title>
     <link rel="stylesheet" href="libraries/bootstrap-4.5.0-dist/css/bootstrap.css">
     <link rel="stylesheet" href="libraries/FlexHelper/FlexHelper.css">
     <link rel="stylesheet" href="css/universal.css">
-    <link rel="stylesheet" href="css/myphoto_myfavor.css">
+    <link rel="stylesheet" href="css/upload_edit.css">
     <script src="libraries/jQuery/jquery-3.5.1.js"></script>
+    <script src="js/utils/util.js"></script>
     <script src="libraries/bootstrap-4.5.0-dist/js/bootstrap.js"></script>
-    <script src="js/class/PageWithPagination.js"></script>
-    <script src="js/class/MyFavorPage.class.js"></script>
-    <script src="js/myfavor.js"></script>
+    <script src="js/class/UploadPage.class.js"></script>
+    <script src="js/class/ModifyPage.class.js"></script>
+    <script src="js/modify.js"></script>
 </head>
 <body>
-
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="#">
         <img src="images/logo.JPG" style="width: 30px;height: 30px">
@@ -30,10 +30,10 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="nav-link" href="index">主页</a>
+                <a class="nav-link" href="#">主页</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="search">搜索</a>
+                <a class="nav-link" href="#">搜索</a>
             </li>
             <li class="nav-item dropdown">
                 <c:if test="${requestScope.user!=null}">
@@ -66,41 +66,33 @@
     </div>
 </nav>
 
-
 <main class="flex-container">
-    <div class="card flex-24-24">
+    <div class="card flex-1">
         <div class="card-header">
-            我的足迹
+            修改图片
         </div>
-        <div class="card-body" id="footageArea">
-            <ul class="list-group list-group-horizontal-sm">
-                <li class="list-group-item">
-                    <span>图片1</span>
-                    <span class="badge badge-info">删</span>
-                </li>
-                <li class="list-group-item">
-                    <span>图片2</span>
-                    <span class="badge badge-info">删</span>
-                </li>
-            </ul>
-        </div>
+        <form class="card-body flex-container" id="form">
+            <div id="photoPreviewArea" class="flex-1">
+
+            </div>
+            <input id="photoInput" type="file" name="photo" accept="image/jpeg,image/png,image/gif" class="flex-1">
+            <label class="flex-1">标题</label>
+            <input type="text" class="flex-1 form-control" name="title">
+            <label class="flex-1">主题</label>
+            <input type="text" class="flex-1 form-control" name="content">
+            <label class="flex-1">描述</label>
+            <input type="text" class="flex-1 form-control" name="description">
+            <div class="flex-1 flex-container">
+                <select class="flex-8-24 form-control" name="country" id="countrySelect">
+                    <option value="">选择国家</option>
+                </select>
+                <select class="flex-8-24 form-control" name="city" id="citySelect">
+                    <option value="">选择城市</option>
+                </select>
+            </div>
+            <button type="button" class="flex-1 btn btn-info" id="submitButton">确认修改</button>
+        </form>
     </div>
-    <div class="card flex-24-24">
-        <div class="card-header">
-            我的收藏
-        </div>
-        <div class="card-body" id="imageArea">
-
-        </div>
-    </div>
-
-    <nav aria-label="Page navigation example">
-        <ul class="pagination" id="pagination">
-
-        </ul>
-    </nav>
 </main>
-
-
 </body>
 </html>

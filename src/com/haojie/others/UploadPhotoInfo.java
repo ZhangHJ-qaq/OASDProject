@@ -95,43 +95,42 @@ public class UploadPhotoInfo {
         this.city = MyUtils.cleanXSS(this.city);
         this.country = MyUtils.cleanXSS(this.country);
         this.content = MyUtils.cleanXSS(this.content);
-        this.country = MyUtils.cleanXSS(this.country);
-        this.city = MyUtils.cleanXSS(city);
-
+        this.description = MyUtils.cleanXSS(this.description);
+        this.title = MyUtils.cleanXSS(this.title);
     }
 
     public void checkCountryAndCity(Connection connection) throws CountryCityMismatchException {
 
-            CountryDao countryDao = new CountryDaoImpl(connection);
-            CityDao cityDao = new CityDaoImpl(connection);
-            if (!countryDao.countryExist(this.country)) {
-                throw new CountryCityMismatchException("国家不存在！");
-            }
+        CountryDao countryDao = new CountryDaoImpl(connection);
+        CityDao cityDao = new CityDaoImpl(connection);
+        if (!countryDao.countryExist(this.country)) {
+            throw new CountryCityMismatchException("国家不存在！");
+        }
 
-            if (!cityDao.countryCityMatch(Integer.parseInt(this.city), this.country)) {
-                throw new CountryCityMismatchException("国家和城市不对应！");
-            }
+        if (!cityDao.countryCityMatch(Integer.parseInt(this.city), this.country)) {
+            throw new CountryCityMismatchException("国家和城市不对应！");
+        }
 
 
     }
 
     public void checkComplete() throws PhotoInfoIncompleteException {
 
-            if (this.title == null || this.title.equals("")) {
-                throw new PhotoInfoIncompleteException("图片标题没有填写");
-            }
-            if (this.description == null || this.description.equals("")) {
-                throw new PhotoInfoIncompleteException("图片描述没有填写");
-            }
-            if (this.content == null || this.content.equals("")) {
-                throw new PhotoInfoIncompleteException("图片主题没有填写");
-            }
-            if (this.country == null || this.country.equals("")) {
-                throw new PhotoInfoIncompleteException("图片国家没有填写");
-            }
-            if (this.city == null || this.city.equals("")) {
-                throw new PhotoInfoIncompleteException("图片城市没有填写");
-            }
+        if (this.title == null || this.title.equals("")) {
+            throw new PhotoInfoIncompleteException("图片标题没有填写");
+        }
+        if (this.description == null || this.description.equals("")) {
+            throw new PhotoInfoIncompleteException("图片描述没有填写");
+        }
+        if (this.content == null || this.content.equals("")) {
+            throw new PhotoInfoIncompleteException("图片主题没有填写");
+        }
+        if (this.country == null || this.country.equals("")) {
+            throw new PhotoInfoIncompleteException("图片国家没有填写");
+        }
+        if (this.city == null || this.city.equals("")) {
+            throw new PhotoInfoIncompleteException("图片城市没有填写");
+        }
 
 
     }

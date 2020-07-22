@@ -83,9 +83,6 @@
             <div class="flex-1 flex-container">
                 <select class="flex-8-24 form-control" name="country" id="countrySelect">
                     <option value="">选择国家</option>
-                    <c:forEach items="${requestScope.countryList}" var="country">
-                        <option value="${country.ISO}">${country.country_RegionName}</option>
-                    </c:forEach>
                 </select>
                 <select class="flex-8-24 form-control" name="city" id="citySelect">
                     <option value="">选择城市</option>

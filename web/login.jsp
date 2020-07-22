@@ -23,7 +23,9 @@
         <label class="flex-1">密码</label>
         <input type="password" name="password" class="flex-1 form-control">
         <label class="flex-1">验证码</label>
-        <img src="getCaptcha" alt="captcha">
+        <div class="flex-1" id="captchaArea">
+            <img src="getCaptcha" alt="captcha">
+        </div>
         <input type="text" name="captcha" class="flex-1 form-control">
         <button type="button" class="btn btn-info flex-1" id="loginButton">登录</button>
 

@@ -31,5 +31,7 @@ public interface ImageFavorDao {
      */
     public abstract boolean unlikeImage(User user,int imageID);
 
+    public abstract boolean deleteAllImageFavor(int imageID);
+
 
 }

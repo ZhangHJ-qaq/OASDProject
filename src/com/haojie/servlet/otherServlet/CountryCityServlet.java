@@ -36,6 +36,9 @@ public class CountryCityServlet extends HttpServlet {
                 erjiliandong(request, response);
                 return;
             }
+            if (method.equals("getCountryOptions")) {
+                getCountryOptions(request, response);
+            }
 
 
         } catch (Exception ignored) {
@@ -57,6 +60,24 @@ public class CountryCityServlet extends HttpServlet {
             out.println(JSON.toJSON(cityList));
 
         } catch (Exception ignored) {
+        } finally {
+            DbUtils.closeQuietly(connection);
+        }
+    }
+
+    private void getCountryOptions(HttpServletRequest request, HttpServletResponse response) {
+        Connection connection = null;
+        try {
+            PrintWriter out = response.getWriter();
+            DataSource dataSource = (DataSource) this.getServletContext().getAttribute("dataSource");
+            connection = dataSource.getConnection();
+            CountryDao countryDao = new CountryDaoImpl(connection);
+            List<Country> countryList = countryDao.getALL();
+            out.println(JSON.toJSON(countryList));
+        } catch (Exception ignored) {
+
+        } finally {
+            DbUtils.closeQuietly(connection);
         }
     }
 

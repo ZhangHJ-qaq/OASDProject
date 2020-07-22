@@ -5,21 +5,26 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.haojie.bean.Image;
 import com.haojie.bean.User;
 import com.haojie.dao.userDao.UserDao;
 import com.haojie.dao.userDao.UserDaoImpl;
+import com.haojie.others.ActionResult;
 import com.haojie.others.SearchResult;
 import com.haojie.service.ImageService;
 import com.haojie.service.UserService;
 import org.apache.commons.dbutils.DbUtils;
 import sun.security.mscapi.PRNG;
 
+import javax.jws.soap.SOAPBinding;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
+import javax.xml.crypto.Data;
+import java.awt.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -42,7 +47,13 @@ public class ImageServlet extends HttpServlet {
         }
         if (request.getParameter("method").equals("myfavor")) {
             myfavor(request, response);
+            return;
         }
+        if (request.getParameter("method").equals("getImageInfo")) {
+            getImageInfo(request, response);
+            return;
+        }
+
 
     }
 
@@ -52,6 +63,7 @@ public class ImageServlet extends HttpServlet {
 
     /**
      * 和图片搜索有关的ajax请求的处理
+     *
      * @param request
      * @param response
      */
@@ -74,9 +86,10 @@ public class ImageServlet extends HttpServlet {
             PrintWriter out = response.getWriter();
             out.println(s);
 
-            DbUtils.close(connection);
         } catch (SQLException | IOException ignored) {
 
+        } finally {
+            DbUtils.closeQuietly(connection);
         }
 
 
@@ -84,6 +97,7 @@ public class ImageServlet extends HttpServlet {
 
     /**
      * 和查看我的图片有关的ajax请求的处理
+     *
      * @param request
      * @param response
      */
@@ -105,16 +119,18 @@ public class ImageServlet extends HttpServlet {
             PrintWriter out = response.getWriter();
             out.println(JSON.toJSON(searchResult));
 
-            DbUtils.close(connection);
 
         } catch (Exception ignored) {
 
+        } finally {
+            DbUtils.closeQuietly(connection);
         }
 
     }
 
     /**
      * 处理我的收藏的ajax请求
+     *
      * @param request
      * @param response
      */
@@ -140,8 +156,37 @@ public class ImageServlet extends HttpServlet {
 
         } catch (Exception ignored) {
 
+        } finally {
+            DbUtils.closeQuietly(connection);
         }
 
+    }
+
+    private void getImageInfo(HttpServletRequest request, HttpServletResponse response) {
+        Connection connection = null;
+        try {
+            PrintWriter out = response.getWriter();
+            DataSource dataSource = (DataSource) getServletContext().getAttribute("dataSource");
+            connection = dataSource.getConnection();
+            int imageID = Integer.parseInt(request.getParameter("imageID"));
+
+            UserService userService = new UserService(connection, request);
+            ImageService imageService = new ImageService(connection);
+
+            User user = userService.tryAutoLogin();
+            Image image = imageService.getImage(user, imageID);
+
+            if(image==null){
+                out.println(JSON.toJSON(new ActionResult(false,"你还没有这个图片，不能修改它。")));
+                return;
+            }
+            out.println(JSON.toJSON(image));
+
+        } catch (Exception ignored) {
+
+        } finally {
+            DbUtils.closeQuietly(connection);
+        }
     }
 
 

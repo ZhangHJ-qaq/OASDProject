@@ -98,7 +98,7 @@
 <div id="hotPhotosDisplayArea" class="flex-container">
     <c:forEach var="image" items="${requestScope.freshImageList}">
         <div class="card flex-8-24">
-            <img src="photos/small/${image.path}" class="card-img-top" alt="${image.title}">
+            <img src="photos/small/${image.path}" class="card-img-top img-thumbnail" alt="${image.title}">
             <div class="card-body">
                 <h5 class="card-title">${image.title}</h5>
                 <p class="card-text">作者:${image.username}</p>

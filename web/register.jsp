@@ -35,7 +35,9 @@
         <input type="password" name="password2" class="flex-1 form-control" id="password2Input">
         <div id="password2InfoArea" class="flex-1"></div>
         <label class="flex-1">验证码</label>
-        <img src="getCaptcha" alt="captcha">
+        <div class="flex-1" id="captchaArea">
+            <img src="getCaptcha" alt="captcha">
+        </div>
         <input type="email" name="captcha" class="flex-1 form-control" id="captchaInput">
         <button type="button" class="btn btn-info flex-1" id="submitButton">注册</button>
         <div>已有帐号？<a href="login">登录！</a></div>

@@ -61,11 +61,25 @@ class MyPhotoPageClass extends PageWithPagination {
 
     //待实现
     modifyImage(imageID) {
-        alert("修改" + imageID);
+        location.assign(`modify?imageID=${imageID}`)
     }
 
     deleteImage(imageID) {
-        alert("删除" + imageID);
+        let that = this;
+        $.post(`UserServlet?method=delete&imageID=${imageID}`)
+            .done(function (data) {
+                let deleteResult = JSON.parse(data);
+                if (deleteResult['success']) {
+                    alert("删除成功");
+                    that.search(that.currentPage);
+                } else {
+                    alert("删除失败");
+                }
+
+            })
+            .fail(function () {
+                alert("删除失败");
+            })
     }
 
 

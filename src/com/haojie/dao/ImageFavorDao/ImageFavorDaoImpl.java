@@ -53,5 +53,17 @@ public class ImageFavorDaoImpl extends GenericDao<ImageFavor> implements ImageFa
         }
     }
 
+    @Override
+    public boolean deleteAllImageFavor(int imageID) {
+        try {
+            String sql = "delete from travelimagefavor where imageID=?";
+            this.update(this.connection, sql, imageID);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+
+    }
+
 
 }

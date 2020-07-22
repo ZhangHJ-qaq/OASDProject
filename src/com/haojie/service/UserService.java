@@ -42,10 +42,11 @@ public class UserService {
 
     /**
      * 尝试用户的注册
-     * @param username 用户名
-     * @param email 邮箱
-     * @param password1 密码1
-     * @param password2 密码2
+     *
+     * @param username     用户名
+     * @param email        邮箱
+     * @param password1    密码1
+     * @param password2    密码2
      * @param captchaInput 验证码输入
      * @return ActionResult对象
      */
@@ -112,8 +113,8 @@ public class UserService {
     /**
      * 尝试用户登录
      *
-     * @param username 用户名
-     * @param password 密码
+     * @param username     用户名
+     * @param password     密码
      * @param captchaInput 验证码输入
      * @return 结果对象
      */
@@ -167,7 +168,8 @@ public class UserService {
 
     /**
      * 检查用户是否已经收藏了这个图片
-     * @param user 用户对象
+     *
+     * @param user    用户对象
      * @param imageID 图片id
      * @return true代表收藏了 false代表没收藏
      */
@@ -180,10 +182,22 @@ public class UserService {
         }
     }
 
+    public boolean hasTheImage(User user, int imageID) {
+        try {
+            ImageDao imageDao = new ImageDaoImpl(connection);
+            return imageDao.imageExists(user, imageID);
+
+        } catch (Exception e) {
+            return false;
+        }
+
+    }
+
 
     /**
      * 用户收藏图片的函数
-     * @param user 用户对象
+     *
+     * @param user    用户对象
      * @param imageID 图片id
      * @return 结果对象
      */
@@ -208,7 +222,8 @@ public class UserService {
 
     /**
      * 用户取消收藏图片的函数
-     * @param user 用户对象
+     *
+     * @param user    用户对象
      * @param imageID 图片id
      * @return 结果对象
      */
@@ -229,6 +244,28 @@ public class UserService {
         } catch (Exception e) {
             return new ActionResult(false, "取消收藏失败");
         }
+    }
+
+    public ActionResult insertImageToDB(User user, Image image) {
+        ImageDao imageDao = new ImageDaoImpl(connection);
+        if (user == null) return new ActionResult(false, "没有登陆或登录已经过期");
+        return imageDao.insertImage(user, image);
+    }
+
+    public ActionResult deleteImageFromDB(User user, int imageID) {
+        ImageDao imageDao = new ImageDaoImpl(connection);
+        if (!imageDao.imageExists(user, imageID)) return new ActionResult(false, "你不能删除自己没有的图片");
+        if (user == null) return new ActionResult(false, "没有登录或登录已经过期");
+        return imageDao.deleteImage(imageID);
+    }
+
+    public ActionResult modifyImageInDB(User user, int imageID, Image image) {
+        ImageDao imageDao = new ImageDaoImpl(connection);
+        if (!imageDao.imageExists(user, imageID)) return new ActionResult(false, "你不能删除自己没有的图片");
+        if (user == null) return new ActionResult(false, "没有登录或登录已经过期");
+
+        return imageDao.modifyImage(user, imageID, image);
+
     }
 
 

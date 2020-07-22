@@ -1,6 +1,7 @@
 $(function () {
     let loginButton = $("#loginButton");
     let form = $("#form")
+    let captchaArea = $("#captchaArea");
     loginButton.click(function () {
         let arrayToBeSubmitted = form.serializeArray();
         arrayToBeSubmitted[1]['value'] = md5(arrayToBeSubmitted[1]['value']);
@@ -11,8 +12,15 @@ $(function () {
                 if (object['success']) {
                     location.assign("index");
                 }
+                changeCaptcha();
             })
 
     })
+
+    function changeCaptcha() {
+        captchaArea.empty();
+        captchaArea.append($(`<img src="getCaptcha?ver=${Math.random()}" alt="captcha">`));
+    }
+
 
 })

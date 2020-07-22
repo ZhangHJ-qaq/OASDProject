@@ -52,9 +52,12 @@ public class DetailPageServlet extends HttpServlet {
             ImageService imageService = new ImageService(connection);
             Image image = imageService.getImage(imageID);
 
+
             request.setAttribute("image", image);
 
             request.getRequestDispatcher("detailsjsp").forward(request, response);
+
+
 
             DbUtils.close(connection);
 

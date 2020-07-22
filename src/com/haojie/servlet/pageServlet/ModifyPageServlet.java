@@ -1,9 +1,6 @@
 package com.haojie.servlet.pageServlet;
 
-import com.haojie.bean.Country;
 import com.haojie.bean.User;
-import com.haojie.dao.countryDao.CountryDao;
-import com.haojie.dao.countryDao.CountryDaoImpl;
 import com.haojie.service.UserService;
 import org.apache.commons.dbutils.DbUtils;
 
@@ -15,12 +12,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.Connection;
-import java.util.List;
 
-@WebServlet("/upload")
-public class UploadPageServlet extends HttpServlet {
+@WebServlet("/modify")
+public class ModifyPageServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doGet(request, response);
+
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -36,14 +32,11 @@ public class UploadPageServlet extends HttpServlet {
             }
             request.setAttribute("user", user);
 
-
-
-            request.getRequestDispatcher("uploadjsp").forward(request, response);
+            request.getRequestDispatcher("modifyjsp").forward(request, response);
 
         } catch (Exception ignored) {
-        }finally {
+        } finally {
             DbUtils.closeQuietly(connection);
         }
-
     }
 }

@@ -15,6 +15,7 @@ class RegisterPageClass {
         this.usernameOK = false;
         this.emailOK = false;
         this.passwordOK = false;
+        this.captchaArea = $("#captchaArea");
 
 
         //get all the input elements needed
@@ -175,12 +176,17 @@ class RegisterPageClass {
                     if (object['success']) {
                         location.assign("index");
                     }
+                    that.changeCaptcha();
                 })
-
 
 
         })
 
+    }
+
+    changeCaptcha() {
+        this.captchaArea.empty();
+        this.captchaArea.append($(`<img src="getCaptcha?ver=${Math.random()}" alt="captcha">`));
     }
 
 

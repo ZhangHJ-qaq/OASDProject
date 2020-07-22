@@ -162,10 +162,67 @@ public class ImageDaoImpl extends GenericDao<Image> implements ImageDao {
     }
 
     @Override
+    public ActionResult deleteImage(int imageID) {
+        try {
+            String sql = "delete from travelimage where ImageID=?";
+            int rowsAffected = this.update(connection, sql, imageID);
+            if (rowsAffected > 0) {
+                return new ActionResult(true, "删除成功");
+            }
+            return new ActionResult(false, "删除失败");
+
+        } catch (Exception e) {
+            return new ActionResult(false, "删除失败");
+        }
+    }
+
+    @Override
+    public Image getImage(User user, int imageID) {
+        try {
+            int uid = user.getUid();
+            String sql = "select imageid, title, description, travelimage.latitude, travelimage.longitude, citycode, travelimage.country_regioncodeiso, uid, path, content, datereleased,AsciiName from travelimage inner join geocities on geocities.GeoNameID=travelimage.CityCode  where uid=? and imageID=?";
+            Image image = this.queryForOne(connection, sql, uid, imageID);
+            return image;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @Override
+    public ActionResult modifyImage(User user, int imageID, Image image) {
+        try {
+            String sql = "update travelimage set Title=?,Description=?,CityCode=?,Country_RegionCodeISO=?,PATH=?,Content=?,DateReleased=? where UID=? and ImageID=?";
+            int rowsAffected = this.update(this.connection, sql,
+                    image.getTitle(), image.getDescription(), image.getCityCode(), image.getCountry_RegionCodeISO(), image.getPath(), image.getContent(), image.getDateReleased(), user.getUid(), imageID
+            );
+            if (rowsAffected > 0) {
+                return new ActionResult(true, "修改成功");
+            } else {
+                return new ActionResult(false, "修改失败");
+            }
+        } catch (Exception e) {
+            return new ActionResult(false, "修改失败");
+        }
+    }
+
+    @Override
     public boolean imageExists(String fileName) {
         String sql = "select * from travelimage where PATH regexp ?";
         try {
             List<Image> imageList = this.queryForList(connection, sql, fileName);
+            return imageList.size() > 0;
+
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean imageExists(User user, int imageID) {
+        try {
+            int uid = user.getUid();
+            String sql = "select * from travelimage where uid=? and imageID=?";
+            List<Image> imageList = this.queryForList(connection, sql, uid, imageID);
             return imageList.size() > 0;
 
         } catch (Exception e) {
