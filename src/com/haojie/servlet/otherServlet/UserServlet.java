@@ -1,6 +1,7 @@
 package com.haojie.servlet.otherServlet;
 
 import com.alibaba.fastjson.JSON;
+import com.google.gson.JsonObject;
 import com.haojie.bean.Image;
 import com.haojie.bean.ImageFavor;
 import com.haojie.bean.User;
@@ -34,6 +35,7 @@ import java.nio.file.Files;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.HashMap;
 
 @MultipartConfig()
 @WebServlet("/UserServlet")
@@ -77,6 +79,9 @@ public class UserServlet extends HttpServlet {
             if (request.getParameter("method").equals("modify")) {
                 modify(request, response);
                 return;
+            }
+            if (request.getParameter("method").equals("getUid")) {
+                getUid(request, response);
             }
         } catch (Exception ignored) {
 
@@ -512,6 +517,32 @@ public class UserServlet extends HttpServlet {
 
         } catch (Exception ignored) {
             System.out.println(ignored.getMessage());
+        } finally {
+            DbUtils.closeQuietly(connection);
+        }
+
+    }
+
+    private void getUid(HttpServletRequest request, HttpServletResponse response) {
+        Connection connection = null;
+        try {
+            DataSource dataSource = (DataSource) getServletContext().getAttribute("dataSource");
+            connection = dataSource.getConnection();
+
+            UserService userService = new UserService(connection, request);
+
+            User user = userService.tryAutoLogin();
+
+            if (user == null) return;
+
+            HashMap<String, Integer> hashMap = new HashMap<>();
+            hashMap.put("uid", user.getUid());
+
+            PrintWriter out = response.getWriter();
+
+            out.println(JSON.toJSON(hashMap));
+
+        } catch (Exception ignored) {
         } finally {
             DbUtils.closeQuietly(connection);
         }

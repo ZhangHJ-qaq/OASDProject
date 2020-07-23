@@ -3,6 +3,8 @@ class MyFavorPageClass extends PageWithPagination {
         super();
         this.pagesize = 6;
         this.imageArea = $("#imageArea");
+        this.footageArea = $("#footageArea");
+        this.clearFootageButton = $("#clearFootageButton");
     }
 
     search(requestedPage) {
@@ -45,19 +47,7 @@ class MyFavorPageClass extends PageWithPagination {
             );
             let unfavorButton = $(element.get(0).querySelector(".btn-danger"));
             unfavorButton.click(function () {
-                let c=confirm("你确定要取消收藏吗？");
-                if(!c) return;
-                $.post(`UserServlet?method=unfavor&imageID=${imageList[i]['imageID']}`)
-                    .done(function (data) {
-                        let actionResult = JSON.parse(data);
-                        alert(actionResult['info']);
-                        if (actionResult['success']) {
-                            that.search(that.currentPage);
-                        }
-                    })
-                    .fail(function () {
-                        alert("出错了，请稍后再试");
-                    })
+                that.unfavor()
             })
             that.imageArea.append(element);
         }
@@ -66,7 +56,65 @@ class MyFavorPageClass extends PageWithPagination {
 
 
     unfavor(imageID) {
-        alert("取消收藏" + imageID)
+        let c = confirm("你确定要取消收藏吗？");
+        if (!c) return;
+        $.post(`UserServlet?method=unfavor&imageID=${imageList[i]['imageID']}`)
+            .done(function (data) {
+                let actionResult = JSON.parse(data);
+                alert(actionResult['info']);
+                if (actionResult['success']) {
+                    that.search(that.currentPage);
+                }
+            })
+            .fail(function () {
+                alert("出错了，请稍后再试");
+            })
+    }
+
+    setMyFootage() {
+        let that = this;
+        $.post("UserServlet?method=getUid")
+            .done(function (data) {
+                let uid = JSON.parse(data)['uid'];
+                let cookies = document.cookie.split(";");
+
+                for (let i = 0; i < cookies.length; i++) {//遍历cookie
+
+                    //如果找到了uid对应的 存有我的足迹信息的cookie
+                    if (cookies[i].split("=")[0] === uid.toString()) {
+                        let json = decodeURIComponent(cookies[i].split("=")[1]);
+
+                        let browseRecord = JSON.parse(json);
+                        that.footageArea.empty()
+                        for (let i = 0; i <= browseRecord['records'].length; i++) {
+                            let element = $(
+                                `<li class="list-group-item">
+                                    <span class="footageTitle">${browseRecord['records'][i]['title']}</span>
+                                </li>`
+                            )
+                            that.footageArea.append(element);
+
+
+                            //设置点击足迹跳转到对应页面
+                            element.click(function () {
+                                location.assign(`details?imageID=${browseRecord['records'][i]['imageID']}`)
+                            })
+
+                            //设置点击了清空足迹以后的行为
+                            that.clearFootageButton.click(function () {
+                                document.cookie=`${uid}=;expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+                                alert("清空成功！");
+                                that.footageArea.empty();
+                            })
+
+                        }
+
+                    }
+                }
+
+
+            })
+
     }
 
 

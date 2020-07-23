@@ -72,17 +72,11 @@
         <div class="card-header">
             我的足迹
         </div>
-        <div class="card-body" id="footageArea">
-            <ul class="list-group list-group-horizontal-sm">
-                <li class="list-group-item">
-                    <span>图片1</span>
-                    <span class="badge badge-info">删</span>
-                </li>
-                <li class="list-group-item">
-                    <span>图片2</span>
-                    <span class="badge badge-info">删</span>
-                </li>
+        <div class="card-body" >
+            <ul class="list-group list-group-horizontal-sm" id="footageArea">
+
             </ul>
+            <button class="btn btn-info" id="clearFootageButton">点我清空足迹</button>
         </div>
     </div>
     <div class="card flex-24-24">
