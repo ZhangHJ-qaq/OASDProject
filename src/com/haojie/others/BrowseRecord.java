@@ -28,7 +28,7 @@ public class BrowseRecord {
         if (size < maxNumOfRecords) {//如果浏览记录小于最大条数的话
             records.add(singleBrowseRecord);
         } else {
-            for (int i = 0; i < maxNumOfRecords - 2; i++) {
+            for (int i = 0; i <= maxNumOfRecords - 2; i++) {
                 records.set(i, records.get(i + 1));
             }//将所有的单一记录，全部向前移一位，原先index=0处的，不要了
             records.set(maxNumOfRecords - 1, singleBrowseRecord);

@@ -14,6 +14,10 @@ public class User {
     private int state;
     private Timestamp dateJoined;
     private Timestamp dateLastModified;
+    private String salt;
+    private String sessionID;
+    private int canBeSeenFavors;
+
 
     public User(int uid, String username, String email, String pass, int state, Timestamp dateJoined, Timestamp dateLastModified, String salt, String sessionID) {
         this.uid = uid;
@@ -46,8 +50,7 @@ public class User {
         this.sessionID = sessionID;
     }
 
-    private String salt;
-    private String sessionID;
+
 
     public User() {
 
@@ -116,5 +119,13 @@ public class User {
 
     public void setSalt(String salt) {
         this.salt = salt;
+    }
+
+    public int getCanBeSeenFavors() {
+        return canBeSeenFavors;
+    }
+
+    public void setCanBeSeenFavors(int canBeSeenFavors) {
+        this.canBeSeenFavors = canBeSeenFavors;
     }
 }

@@ -27,11 +27,11 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-                <a class="nav-link" href="#">主页</a>
-            </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">搜索</a>
+                <a class="nav-link" href="index">主页</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="search">搜索</a>
             </li>
             <li class="nav-item dropdown">
                 <c:if test="${requestScope.user!=null}">
@@ -44,6 +44,7 @@
                         <a class="dropdown-item" href="myfavor">我的收藏</a>
                         <a class="dropdown-item" href="upload">上传</a>
                         <a class="dropdown-item" href="myphoto">我的图片</a>
+                        <a class="dropdown-item" href=addfriend>加好友</a>
                         <a class="dropdown-item" href="myfriend">我的好友</a>
                         <a class="dropdown-item" href="setting">个人设置</a>
                         <a class="dropdown-item" href="logout">退出登录</a>

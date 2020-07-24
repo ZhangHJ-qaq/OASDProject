@@ -2,18 +2,24 @@ package com.haojie.servlet.otherServlet;
 
 import com.alibaba.fastjson.JSON;
 import com.google.gson.JsonObject;
-import com.haojie.bean.Image;
-import com.haojie.bean.ImageFavor;
-import com.haojie.bean.User;
+import com.haojie.bean.*;
 import com.haojie.dao.ImageFavorDao.ImageFavorDao;
 import com.haojie.dao.ImageFavorDao.ImageFavorDaoImpl;
+import com.haojie.dao.friendRecordDao.FriendRecordDao;
+import com.haojie.dao.friendRecordDao.FriendRecordDaoImpl;
+import com.haojie.dao.friendRequestDao.FriendRequestDao;
+import com.haojie.dao.friendRequestDao.FriendRequestDaoImpl;
+import com.haojie.dao.sysmessageDao.SysMessageDao;
+import com.haojie.dao.sysmessageDao.SysMessageDaoImpl;
+import com.haojie.dao.userDao.UserDao;
+import com.haojie.dao.userDao.UserDaoImpl;
 import com.haojie.exception.CountryCityMismatchException;
 import com.haojie.exception.PhotoInfoIncompleteException;
 import com.haojie.exception.TypeIncorrectException;
 import com.haojie.others.ActionResult;
+import com.haojie.others.SearchResult;
 import com.haojie.others.UploadPhotoInfo;
-import com.haojie.service.ImageService;
-import com.haojie.service.UserService;
+import com.haojie.service.*;
 import com.haojie.utils.PicReduce;
 import org.apache.commons.dbutils.DbUtils;
 import org.omg.Messaging.SYNC_WITH_TRANSPORT;
@@ -36,6 +42,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
 
 @MultipartConfig()
 @WebServlet("/UserServlet")
@@ -82,7 +90,50 @@ public class UserServlet extends HttpServlet {
             }
             if (request.getParameter("method").equals("getUid")) {
                 getUid(request, response);
+                return;
             }
+            if (request.getParameter("method").equals("searchFriendToAdd")) {
+                searchFriendToAdd(request, response);
+                return;
+            }
+            if (request.getParameter("method").equals("addfriend")) {
+                addfriend(request, response);
+                return;
+            }
+            if (request.getParameter("method").equals("getFriendRequests")) {
+                getFriendRequests(request, response);
+                return;
+            }
+            if (request.getParameter("method").equals("refuseRequest")) {
+                refuseRequest(request, response);
+                return;
+            }
+            if (request.getParameter("method").equals("acceptRequest")) {
+                acceptRequest(request, response);
+                return;
+            }
+            if (request.getParameter("method").equals("getSysMessage")) {
+                getSysMessage(request, response);
+                return;
+            }
+            if (request.getParameter("method").equals("readMessage")) {
+                readMessage(request, response);
+                return;
+            }
+            if (request.getParameter("method").equals("getMyFriend")) {
+                getMyFriend(request, response);
+                return;
+            }
+            if (request.getParameter("method").equals("deleteFriend")) {
+                deleteFriend(request, response);
+                return;
+            }
+            if (request.getParameter("method").equals("othersfavor")) {
+                othersfavor(request, response);
+                return;
+            }
+
+
         } catch (Exception ignored) {
 
         }
@@ -549,5 +600,360 @@ public class UserServlet extends HttpServlet {
 
     }
 
+    private void searchFriendToAdd(HttpServletRequest request, HttpServletResponse response) {
+        Connection connection = null;
+        try {
+            DataSource dataSource = (DataSource) getServletContext().getAttribute("dataSource");
+            connection = dataSource.getConnection();
+
+            UserService userService = new UserService(connection, request);
+
+            User user = userService.tryAutoLogin();
+
+            if (user == null) return;
+
+            String username = request.getParameter("username");
+            int requestedPage = Integer.parseInt(request.getParameter("requestedPage"));
+            int pageSize = Integer.parseInt(request.getParameter("pageSize"));
+
+            SearchResult userSearchResult = userService.searchUserToAddFriend(
+                    username, requestedPage, pageSize
+            );
+
+            PrintWriter out = response.getWriter();
+
+            out.println(JSON.toJSON(userSearchResult));
+
+        } catch (Exception ignored) {
+
+        } finally {
+            DbUtils.closeQuietly(connection);
+        }
+
+    }
+
+    private void addfriend(HttpServletRequest request, HttpServletResponse response) {
+        Connection connection = null;
+        try {
+            PrintWriter out = response.getWriter();
+            DataSource dataSource = (DataSource) getServletContext().getAttribute("dataSource");
+            connection = dataSource.getConnection();
+
+            UserService userService = new UserService(connection, request);
+            UserDao userDao = new UserDaoImpl(connection);
+
+            User user = userService.tryAutoLogin();
+
+            if (user == null) {
+                out.println(JSON.toJSON(new ActionResult(false, "没有登录或是登录已过期")));
+                return;
+            }
+
+            String targetUsername = request.getParameter("username");
+
+            User targetUser = userDao.getUser(targetUsername);
+
+            if (targetUser == null) {
+                out.println(JSON.toJSON(new ActionResult(false, "目标的用户不存在")));
+                return;
+            }
+
+            int myUID = user.getUid();
+            int targetUID = targetUser.getUid();
+
+            FriendRequestService friendRequestService = new FriendRequestService(connection);
+
+            ActionResult addRequestResult = friendRequestService.addRequest(new FriendRequest(myUID, targetUID));
+
+            out.println(JSON.toJSON(addRequestResult));
+
+
+        } catch (Exception e) {
+
+        } finally {
+            DbUtils.closeQuietly(connection);
+        }
+
+
+    }
+
+    private void getFriendRequests(HttpServletRequest request, HttpServletResponse response) {
+        Connection connection = null;
+        try {
+            PrintWriter out = response.getWriter();
+            DataSource dataSource = (DataSource) getServletContext().getAttribute("dataSource");
+            connection = dataSource.getConnection();
+
+            UserService userService = new UserService(connection, request);
+
+            User user = userService.tryAutoLogin();
+
+            if (user == null) {
+                out.println(JSON.toJSON(new ActionResult(false, "你还没有登陆")));
+                return;
+            }
+
+            int uid = user.getUid();
+
+            FriendRequestService friendRequestService = new FriendRequestService(connection);
+
+            List<FriendRequest> friendRequestList = friendRequestService.getFriendRequestsIReceived(uid);
+
+            out.println(JSON.toJSON(friendRequestList));
+
+        } catch (Exception e) {
+
+        } finally {
+            DbUtils.closeQuietly(connection);
+        }
+
+    }
+
+    private void refuseRequest(HttpServletRequest request, HttpServletResponse response) {
+        Connection connection = null;
+        try {
+            PrintWriter out = response.getWriter();
+            DataSource dataSource = (DataSource) getServletContext().getAttribute("dataSource");
+            connection = dataSource.getConnection();
+
+            UserService userService = new UserService(connection, request);
+            FriendRequestService friendRequestService = new FriendRequestService(connection);
+
+
+            User user = userService.tryAutoLogin();
+            int requestID = Integer.parseInt(request.getParameter("requestID"));
+            if (user == null) {
+                out.println(JSON.toJSON(new ActionResult(false, "没有登录或登录已过期")));
+                return;
+            }
+
+
+            //在service层中进行拒绝请求，并返回拒绝结果
+            ActionResult refuseResult = friendRequestService.refuseRequest(user, requestID);
+
+
+            out.println(JSON.toJSON(refuseResult));
+
+        } catch (Exception e) {
+
+        } finally {
+            DbUtils.closeQuietly(connection);
+        }
+
+    }
+
+    private void acceptRequest(HttpServletRequest request, HttpServletResponse response) {
+        Connection connection = null;
+        try {
+            DataSource dataSource = (DataSource) getServletContext().getAttribute("dataSource");
+            connection = dataSource.getConnection();
+
+            PrintWriter out = response.getWriter();
+
+            UserService userService = new UserService(connection, request);
+
+            User me = userService.tryAutoLogin();
+
+            if (me == null) {
+                out.println(JSON.toJSON(new ActionResult(false, "未登录或登录已过期")));
+                return;
+            }
+
+            int requestID = Integer.parseInt(request.getParameter("requestID"));
+
+            FriendRequestService friendRequestService = new FriendRequestService(connection);
+
+            ActionResult acceptResult = friendRequestService.acceptRequest(me, requestID);
+
+            out.println(JSON.toJSON(acceptResult));
+
+        } catch (Exception ignored) {
+
+        } finally {
+            DbUtils.closeQuietly(connection);
+        }
+
+    }
+
+    private void getSysMessage(HttpServletRequest request, HttpServletResponse response) {
+        Connection connection = null;
+        try {
+            DataSource dataSource = (DataSource) getServletContext().getAttribute("dataSource");
+            connection = dataSource.getConnection();
+            PrintWriter out = response.getWriter();
+
+            UserService userService = new UserService(connection, request);
+
+            User me = userService.tryAutoLogin();
+
+            if (me == null) {
+                out.println(JSON.toJSON(new ActionResult(false, "未登录或登录已过期")));
+                return;
+            }
+
+            SysMessageDao sysMessageDao = new SysMessageDaoImpl(connection);
+
+            List<SysMessage> sysMessageList = sysMessageDao.getMyMessage(me.getUid());
+
+            out.println(JSON.toJSON(sysMessageList));
+        } catch (Exception ignored) {
+
+        } finally {
+            DbUtils.closeQuietly(connection);
+        }
+
+    }
+
+    private void readMessage(HttpServletRequest request, HttpServletResponse response) {
+        Connection connection = null;
+        try {
+            DataSource dataSource = (DataSource) getServletContext().getAttribute("dataSource");
+            connection = dataSource.getConnection();
+            PrintWriter out = response.getWriter();
+
+            UserService userService = new UserService(connection, request);
+
+            User me = userService.tryAutoLogin();
+
+            if (me == null) {
+                out.println(JSON.toJSON(new ActionResult(false, "未登录或登录已过期")));
+                return;
+            }
+
+            SysMessageService sysMessageService = new SysMessageService(connection);
+
+            int messageID = Integer.parseInt(request.getParameter("messageID"));
+
+            sysMessageService.deleteMessage(me.getUid(), messageID);
+
+        } catch (Exception ignored) {
+
+        } finally {
+            DbUtils.closeQuietly(connection);
+        }
+    }
+
+    private void getMyFriend(HttpServletRequest request, HttpServletResponse response) {
+        Connection connection = null;
+        try {
+            DataSource dataSource = (DataSource) getServletContext().getAttribute("dataSource");
+            connection = dataSource.getConnection();
+            PrintWriter out = response.getWriter();
+
+            UserService userService = new UserService(connection, request);
+
+            User me = userService.tryAutoLogin();
+
+            if (me == null) {
+                out.println(JSON.toJSON(new ActionResult(false, "未登录或登录已过期")));
+                return;
+            }
+
+            int pageSize = Integer.parseInt(request.getParameter("pageSize"));
+            int requestedPage = Integer.parseInt(request.getParameter("requestedPage"));
+
+            SearchResult searchResult = userService.searchMyFriend(me.getUid(), requestedPage, pageSize);
+
+            out.println(JSON.toJSON(searchResult));
+
+        } catch (Exception ignored) {
+
+        } finally {
+            DbUtils.closeQuietly(connection);
+        }
+    }
+
+    private void deleteFriend(HttpServletRequest request, HttpServletResponse response) {
+        Connection connection = null;
+        try {
+            DataSource dataSource = (DataSource) getServletContext().getAttribute("dataSource");
+            connection = dataSource.getConnection();
+            PrintWriter out = response.getWriter();
+
+            UserService userService = new UserService(connection, request);
+
+            User me = userService.tryAutoLogin();
+
+            if (me == null) {
+                out.println(JSON.toJSON(new ActionResult(false, "未登录或登录已过期")));
+                return;
+            }
+
+            FriendRecordService friendRecordService = new FriendRecordService(connection);
+
+            int targetUid = Integer.parseInt(request.getParameter("targetUid"));
+
+            boolean deleteFriendResult = friendRecordService.deleteFriend(me.getUid(), targetUid);
+
+            if (deleteFriendResult) {
+                SysMessageDao sysMessageDao = new SysMessageDaoImpl(connection);
+                sysMessageDao.addSysMessage(new SysMessage(targetUid, me.getUsername() + "已删除你好友"));
+
+                out.println(JSON.toJSON(new ActionResult(true, "删除好友成功")));
+            } else {
+                out.println(JSON.toJSON(new ActionResult(false, "删除好友失败")));
+            }
+
+
+        } catch (Exception ignored) {
+
+        } finally {
+            DbUtils.closeQuietly(connection);
+        }
+    }
+
+    private void othersfavor(HttpServletRequest request, HttpServletResponse response) {
+        Connection connection = null;
+        try {
+            DataSource dataSource = (DataSource) getServletContext().getAttribute("dataSource");
+            connection = dataSource.getConnection();
+            PrintWriter out = response.getWriter();
+
+            UserService userService = new UserService(connection, request);
+            UserDao userDao = new UserDaoImpl(connection);
+            FriendRecordDao friendRecordDao = new FriendRecordDaoImpl(connection);
+
+            User me = userService.tryAutoLogin();
+
+            if (me == null) {
+                out.println(JSON.toJSON(new ActionResult(false, "未登录或登录已过期")));
+                return;
+            }
+
+            String othersusername = request.getParameter("username");
+            User other = userDao.getUser(othersusername);
+
+            if (other == null) {
+                out.println(JSON.toJSON(new ActionResult(false, "这个用户不存在！")));
+                return;
+            }
+            if (other.getCanBeSeenFavors() != 1) {
+                out.println(JSON.toJSON(new ActionResult(false, "对方设置了不能被好友查看收藏")));
+                return;
+            }
+
+
+            //查找我是不是对方的好友
+            FriendRecord friendRecord = friendRecordDao.getFriendRecord(other.getUid(), me.getUid());
+            if (friendRecord == null) {
+                out.println(JSON.toJSON(new ActionResult(false, "你不是对方的好友，不能查看对方的收藏")));
+                return;
+            }
+
+            ImageService imageService = new ImageService(connection);
+
+            int requestedPage = Integer.parseInt(request.getParameter("requestedPage"));
+            int pageSize = Integer.parseInt(request.getParameter("pageSize"));
+
+            SearchResult searchResult = imageService.getFavor(other, requestedPage, pageSize);
+
+            out.println(JSON.toJSON(searchResult));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DbUtils.closeQuietly(connection);
+        }
+    }
 
 }

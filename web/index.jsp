@@ -44,6 +44,7 @@
                         <a class="dropdown-item" href="myfavor">我的收藏</a>
                         <a class="dropdown-item" href="upload">上传</a>
                         <a class="dropdown-item" href="myphoto">我的图片</a>
+                        <a class="dropdown-item" href=addfriend>加好友</a>
                         <a class="dropdown-item" href="myfriend">我的好友</a>
                         <a class="dropdown-item" href="setting">个人设置</a>
                         <a class="dropdown-item" href="logout">退出登录</a>

@@ -4,19 +4,20 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>搜索</title>
+    <title>好友列表</title>
     <link rel="stylesheet" href="libraries/bootstrap-4.5.0-dist/css/bootstrap.css">
     <link rel="stylesheet" href="libraries/FlexHelper/FlexHelper.css">
     <link rel="stylesheet" href="css/universal.css">
-    <link rel="stylesheet" href="css/search.css">
+    <link rel="stylesheet" href="css/friendList.css">
     <script src="libraries/jQuery/jquery-3.5.1.js"></script>
     <script src="libraries/bootstrap-4.5.0-dist/js/bootstrap.js"></script>
     <script src="js/class/PageWithPagination.js"></script>
-    <script src="js/class/SearchPage.class.js"></script>
-    <script src="js/search.js"></script>
+    <script src="js/class/MyFriendPage.class.js"></script>
+    <script src="js/myfriend.js"></script>
 </head>
 <body>
-<!--This is navigation bar-->
+
+
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="#">
         <img src="images/logo.JPG" style="width: 30px;height: 30px">
@@ -32,7 +33,7 @@
             <li class="nav-item">
                 <a class="nav-link" href="index">主页</a>
             </li>
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" href="search">搜索</a>
             </li>
             <li class="nav-item dropdown">
@@ -66,41 +67,34 @@
         </ul>
     </div>
 </nav>
-<!--This is main part-->
-<main class="flex-container-center">
-    <div class="card flex-24-24">
-        <div class="card-header">
-            搜索
-        </div>
-        <div class="card-body">
-            <form id="form">
-                <div>
-                    <input type="radio" name="howToSearch" value="title">
-                    <label>按标题搜索</label>
-                    <input type="radio" name="howToSearch" value="content">
-                    <label>按主题搜索</label>
-                </div>
-                <div>
-                    <input type="radio" name="howToOrder" value="popularity">
-                    <label>按热度排序</label>
-                    <input type="radio" name="howToOrder" value="time">
-                    <label>按上传时间排序</label>
-                </div>
-                <div>
-                    <input type="text" name="input" class="form-control">
-                    <button class="btn btn-info" id="submitButton" type="button">搜索</button>
-                </div>
 
-            </form>
+
+
+<main class="flex-container">
+    <div class="card flex-12-24">
+        <div class="card-header">
+            来自别人的好友申请
+        </div>
+        <div class="card-body" style="max-height: 200px;overflow: scroll" id="friendRequestArea">
+
+        </div>
+    </div>
+
+    <div class="card flex-12-24">
+        <div class="card-header">
+            系统消息
+        </div>
+        <div class="card-body" style="max-height: 200px;overflow: scroll" id="sysMessageArea">
+
         </div>
     </div>
 
 
     <div class="card flex-24-24">
         <div class="card-header">
-            搜索结果
+            好友列表
         </div>
-        <div class="card-body" id="imageArea">
+        <div class="card-body" id="friendListArea">
 
         </div>
     </div>
@@ -108,24 +102,9 @@
 
     <nav aria-label="Page navigation example">
         <ul class="pagination" id="pagination">
-            <%--<li class="page-item">
-                <a class="page-link" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
-            </li>
-            <li class="page-item"><a class="page-link">1</a></li>
-            <li class="page-item"><a class="page-link">2</a></li>
-            <li class="page-item"><a class="page-link">3</a></li>
-            <li class="page-item">
-                <a class="page-link" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-            </li>--%>
+
         </ul>
     </nav>
-
-
 </main>
-
 </body>
 </html>

@@ -86,9 +86,9 @@ class MyFavorPageClass extends PageWithPagination {
 
                         let browseRecord = JSON.parse(json);
                         that.footageArea.empty()
-                        for (let i = 0; i <= browseRecord['records'].length; i++) {
+                        for (let i = 0; i <= browseRecord['records'].length-1; i++) {
                             let element = $(
-                                `<li class="list-group-item">
+                                `<li class="list-group-item flex-6-24">
                                     <span class="footageTitle">${browseRecord['records'][i]['title']}</span>
                                 </li>`
                             )
@@ -100,14 +100,14 @@ class MyFavorPageClass extends PageWithPagination {
                                 location.assign(`details?imageID=${browseRecord['records'][i]['imageID']}`)
                             })
 
-                            //设置点击了清空足迹以后的行为
-                            that.clearFootageButton.click(function () {
-                                document.cookie=`${uid}=;expires=Thu, 01 Jan 1970 00:00:00 GMT`;
-                                alert("清空成功！");
-                                that.footageArea.empty();
-                            })
-
                         }
+                        //设置点击了清空足迹以后的行为
+
+                        that.clearFootageButton.click(function () {
+                            document.cookie=`${uid}=;expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+                            alert("清空成功！");
+                            that.footageArea.empty();
+                        })
 
                     }
                 }

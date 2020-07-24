@@ -29,7 +29,7 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" href="index">主页</a>
             </li>
             <li class="nav-item">
@@ -46,6 +46,7 @@
                         <a class="dropdown-item" href="myfavor">我的收藏</a>
                         <a class="dropdown-item" href="upload">上传</a>
                         <a class="dropdown-item" href="myphoto">我的图片</a>
+                        <a class="dropdown-item" href=addfriend>加好友</a>
                         <a class="dropdown-item" href="myfriend">我的好友</a>
                         <a class="dropdown-item" href="setting">个人设置</a>
                         <a class="dropdown-item" href="logout">退出登录</a>
@@ -72,8 +73,8 @@
         <div class="card-header">
             我的足迹
         </div>
-        <div class="card-body" >
-            <ul class="list-group list-group-horizontal-sm" id="footageArea">
+        <div class="card-body flex-container" >
+            <ul class="list-group list-group-horizontal-sm flex-1 flex-container" id="footageArea">
 
             </ul>
             <button class="btn btn-info" id="clearFootageButton">点我清空足迹</button>

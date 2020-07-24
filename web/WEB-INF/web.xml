@@ -88,4 +88,32 @@
         <url-pattern>/modifyjsp</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>addfriendjsp</servlet-name>
+        <jsp-file>/addfriend.jsp</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>addfriendjsp</servlet-name>
+        <url-pattern>/addfriendjsp</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>myfriendjsp</servlet-name>
+        <jsp-file>/myfriend.jsp</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>myfriendjsp</servlet-name>
+        <url-pattern>/myfriendjsp</url-pattern>
+    </servlet-mapping>
+
+
+    <servlet>
+        <servlet-name>othersfavor</servlet-name>
+        <jsp-file>/othersfavor.jsp</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>othersfavor</servlet-name>
+        <url-pattern>/othersfavorjsp</url-pattern>
+    </servlet-mapping>
+
 </web-app>

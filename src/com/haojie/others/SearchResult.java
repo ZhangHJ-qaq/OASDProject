@@ -1,6 +1,7 @@
 package com.haojie.others;
 
 import com.haojie.bean.Image;
+import com.haojie.bean.User;
 
 import java.util.List;
 
@@ -9,18 +10,14 @@ import java.util.List;
  */
 public class SearchResult {
     private List<Image> imageList;
+    private List<User> userList;
     private int respondedPage;
     private int maxPage;
 
-    public SearchResult(){
+    public SearchResult() {
 
     }
 
-    public SearchResult(List<Image> imageList, int respondedPage, int maxPage) {
-        this.imageList = imageList;
-        this.respondedPage = respondedPage;
-        this.maxPage = maxPage;
-    }
 
     public List<Image> getImageList() {
         return imageList;
@@ -44,5 +41,14 @@ public class SearchResult {
 
     public void setMaxPage(int maxPage) {
         this.maxPage = maxPage;
+    }
+
+
+    public List<User> getUserList() {
+        return userList;
+    }
+
+    public void setUserList(List<User> userList) {
+        this.userList = userList;
     }
 }

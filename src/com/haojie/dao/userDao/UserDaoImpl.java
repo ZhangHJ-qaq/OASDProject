@@ -41,7 +41,7 @@ public class UserDaoImpl extends GenericDao<User> implements UserDao {
     }
 
     @Override
-    public ActionResult tryLogin(String username, String password, String sessionID) {
+    public ActionResult tryLogin(String username, String password, String newSessionID) {
         try {
             String sql = "select * from traveluser where username=?";
             List<User> userList = this.queryForList(this.connection, sql, username);
@@ -54,7 +54,7 @@ public class UserDaoImpl extends GenericDao<User> implements UserDao {
 
             if (userList.size() == 1) {
                 sql = "update traveluser set sessionID=? where UserName=?";
-                this.update(connection, sql, sessionID, username);
+                this.update(connection, sql, newSessionID, username);
                 return new ActionResult(true, "登陆成功");
             }
             return new ActionResult(false, "用户名或密码错误");
@@ -87,18 +87,70 @@ public class UserDaoImpl extends GenericDao<User> implements UserDao {
     }
 
 
+    @Override
+    public List<User> searchUserToAddFriend(String username) {
+        try {
+            String sql = "select UserName,DateJoined,Email from traveluser where UserName regexp ?";
+            return this.queryForList(connection, sql, username);
+        } catch (Exception e) {
+            return null;
+        }
+
+
+    }
+
+
     /**
      * 根据username检查这个用户是不是已经存在，在注册的时候用
      *
      * @param username
      * @return
      */
-    private boolean userExists(String username) throws SQLException {
-        String sql = "select UID from traveluser where UserName=?";
-        List<User> list = this.queryForList(this.connection, sql, username);
-        return list.size() != 0;
+    public boolean userExists(String username) {
+        try {
+            return !(this.getUser(username) == null);
+        } catch (Exception e) {
+            return false;
+        }
+
     }
 
+    @Override
+    public User getUser(String username) {
+        try {
+            String sql = "select * from traveluser where username=?";
+            User user = this.queryForOne(this.connection, sql, username);
+            return user;
+        } catch (Exception e) {
+            return null;
+        }
+
+    }
+
+    @Override
+    public User getUser(int uid) {
+        try {
+            String sql = "select * from traveluser where UID=?";
+            return this.queryForOne(connection, sql, uid);
+
+        } catch (Exception e) {
+            return null
+                    ;
+        }
+    }
+
+    @Override
+    public List<User> getMyFriendList(int myuid) {
+        try {
+            String sql = "select UserName,UID,Email,DateJoined  from travelfriendrecord inner join traveluser on travelfriendrecord.UID2=traveluser.UID where UID1=?";
+            return this.queryForList(connection, sql, myuid);
+
+
+        } catch (Exception e) {
+            return null;
+        }
+
+    }
 
 
 }

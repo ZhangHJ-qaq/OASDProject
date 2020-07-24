@@ -10,6 +10,7 @@ import com.haojie.dao.imageDao.ImageDaoImpl;
 import com.haojie.dao.userDao.UserDao;
 import com.haojie.dao.userDao.UserDaoImpl;
 import com.haojie.others.ActionResult;
+import com.haojie.others.SearchResult;
 import com.haojie.utils.MD5Utils;
 import com.haojie.utils.MyUtils;
 import org.apache.commons.dbutils.DbUtils;
@@ -24,6 +25,7 @@ import java.security.SecureRandom;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -267,6 +269,56 @@ public class UserService {
         return imageDao.modifyImage(user, imageID, image);
 
     }
+
+    public SearchResult searchUserToAddFriend(String username, int requestedPage, int pageSize) {
+
+        UserDao userDao = new UserDaoImpl(this.connection);
+        List<User> userList = userDao.searchUserToAddFriend(username);
+
+        SearchResult searchResult = getSearchResult(userList, requestedPage, pageSize);
+
+        return searchResult;
+
+    }
+
+    public SearchResult searchMyFriend(int myuid, int requestedPage, int pageSize) {
+        UserDao userDao = new UserDaoImpl(this.connection);
+        List<User> myFriendList = userDao.getMyFriendList(myuid);
+
+        SearchResult searchResult=getSearchResult(myFriendList,requestedPage,pageSize);
+        return searchResult;
+
+    }
+
+
+    private SearchResult getSearchResult(List<User> originalUserList, int requestedPage, int pageSize) {
+
+        ArrayList<User> subUserList = new ArrayList<>();
+
+        SearchResult searchResult = new SearchResult();
+
+        int maxPage = (int) Math.ceil((double) originalUserList.size() / pageSize);//得到最大页码数
+        searchResult.setMaxPage(maxPage);
+
+        requestedPage = Math.max(requestedPage, 1);
+        requestedPage = Math.min(maxPage, requestedPage);
+
+        searchResult.setRespondedPage(requestedPage);//净化用户输入的页码数，得到最终相应的页面
+
+        int start = pageSize * (requestedPage - 1);
+        int end = Math.min(start + pageSize, originalUserList.size());//根据最终相应的页面，得到应该从原始的list中截取哪一段
+
+        for (int i = start; i < end; i++) {
+            subUserList.add(originalUserList.get(i));
+        }
+
+        searchResult.setUserList(subUserList);
+
+        return searchResult;
+
+    }
+
+
 
 
 }
