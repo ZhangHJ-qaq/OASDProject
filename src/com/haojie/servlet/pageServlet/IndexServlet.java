@@ -33,9 +33,9 @@ public class IndexServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        DataSource dataSource = (DataSource) this.getServletContext().getAttribute("dataSource");
         Connection connection = null;
         try {
+            DataSource dataSource = (DataSource) this.getServletContext().getAttribute("dataSource");
             connection = dataSource.getConnection();
             UserService userService = new UserService(connection, request);
 
@@ -50,9 +50,8 @@ public class IndexServlet extends HttpServlet {
             request.setAttribute("freshImageList", freshImageList);
 
             request.getRequestDispatcher("indexjsp").forward(request, response);
-            DbUtils.close(connection);
-        } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+        } catch (Exception e) {
+            DbUtils.closeQuietly(connection);
         }
 
 

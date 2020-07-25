@@ -12,6 +12,11 @@
     <link rel="stylesheet" href="libraries/thdoan-magnify-cca1561/css/magnify.css">
     <script src="libraries/jQuery/jquery-3.5.1.js"></script>
     <script src="libraries/bootstrap-4.5.0-dist/js/bootstrap.js"></script>
+    <script src="js/utils/util.js"></script>
+    <script src="js/class/PageWithPagination.js"></script>
+    <script src="js/class/DetailsPage.class.js"></script>
+    <script src="js/details.js"></script>
+
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -65,7 +70,7 @@
 </nav>
 
 
-<main class="flex-container-center">
+<main class="flex-container-center" style="margin-bottom: 20px">
     <div class="card flex-24-24">
         <div class="card-header">
             图片详情
@@ -116,6 +121,53 @@
             </div>
         </div>
     </div>
+
+    <div class="card flex-1">
+        <div class="card-header">
+            发表你的评论
+        </div>
+        <form class="card-body flex-container" id="form">
+            <input type="text" name="comment" class="flex-16-24 form-control" id="commentInput">
+            <c:choose>
+                <c:when test="${requestScope.user!=null}">
+                    <button class="flex-8-24 btn btn-info" type="button" id="submitButton">发表</button>
+                </c:when>
+                <c:otherwise>
+                    <button class="flex-8-24 btn btn-info" type="button">登陆后才可评论</button>
+                </c:otherwise>
+            </c:choose>
+        </form>
+    </div>
+
+
+    <div class="card flex-1">
+        <div class="card-header">
+            <c:if test="${requestScope.user!=null}">
+                评论区
+                <span class="badge badge-success" id="timeOrderButton">按时间倒序</span>
+                <span class="badge badge-danger" id="popularityOrderButton">按热度倒序</span>
+            </c:if>
+            <c:if test="${requestScope.user==null}">
+                登陆后才可查看评论
+            </c:if>
+        </div>
+        <div class="card-body" id="commentArea">
+
+
+
+        </div>
+    </div>
+
+    <c:if test="${requestScope.user!=null}">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination" id="pagination">
+
+            </ul>
+        </nav>
+    </c:if>
+
+
+
 </main>
 
 
@@ -126,5 +178,6 @@
         $('.zoom').magnify();
     });
 </script>
+
 </body>
 </html>

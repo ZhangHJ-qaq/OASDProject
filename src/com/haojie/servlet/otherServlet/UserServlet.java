@@ -20,6 +20,7 @@ import com.haojie.others.ActionResult;
 import com.haojie.others.SearchResult;
 import com.haojie.others.UploadPhotoInfo;
 import com.haojie.service.*;
+import com.haojie.utils.MyUtils;
 import com.haojie.utils.PicReduce;
 import org.apache.commons.dbutils.DbUtils;
 import org.omg.Messaging.SYNC_WITH_TRANSPORT;
@@ -130,6 +131,18 @@ public class UserServlet extends HttpServlet {
             }
             if (request.getParameter("method").equals("othersfavor")) {
                 othersfavor(request, response);
+                return;
+            }
+            if (request.getParameter("method").equals("comment")) {
+                comment(request, response);
+                return;
+            }
+            if (request.getParameter("method").equals("favorComment")) {
+                favorComment(request, response);
+                return;
+            }
+            if (request.getParameter("method").equals("cancelFavorComment")) {
+                cancelFavorComment(request, response);
                 return;
             }
 
@@ -955,5 +968,111 @@ public class UserServlet extends HttpServlet {
             DbUtils.closeQuietly(connection);
         }
     }
+
+    private void comment(HttpServletRequest request, HttpServletResponse response) {
+        Connection connection = null;
+        try {
+            DataSource dataSource = (DataSource) getServletContext().getAttribute("dataSource");
+            connection = dataSource.getConnection();
+            PrintWriter out = response.getWriter();
+
+
+            UserService userService = new UserService(connection, request);
+
+
+            User me = userService.tryAutoLogin();
+
+            if (me == null) {
+                out.println(JSON.toJSON(new ActionResult(false, "未登录或登录已过期")));
+                return;
+            }
+
+            //得到imageID和用户输入的评论内容
+            int imageID = Integer.parseInt(request.getParameter("imageID"));
+            String text = MyUtils.cleanXSS(request.getParameter("comment"));
+
+            //创建新的评论对象
+            Comment newComment = new Comment(imageID, me.getUid(), text, new Timestamp(System.currentTimeMillis()));
+
+            CommentService commentService = new CommentService(connection);
+
+            //插入评论，得到结果
+            ActionResult commentResult = commentService.addComment(newComment);
+
+            out.println(JSON.toJSON(commentResult));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DbUtils.closeQuietly(connection);
+        }
+    }
+
+    private void favorComment(HttpServletRequest request, HttpServletResponse response) {
+        Connection connection = null;
+        try {
+            DataSource dataSource = (DataSource) getServletContext().getAttribute("dataSource");
+            connection = dataSource.getConnection();
+            PrintWriter out = response.getWriter();
+
+
+            UserService userService = new UserService(connection, request);
+
+
+            User me = userService.tryAutoLogin();
+
+            if (me == null) {
+                out.println(JSON.toJSON(new ActionResult(false, "未登录或登录已过期")));
+                return;
+            }
+
+            int commentID = Integer.parseInt(request.getParameter("commentID"));
+
+
+            ActionResult favorCommentResult = userService.favorComment(me.getUid(), commentID);
+
+            out.println(JSON.toJSON(favorCommentResult));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DbUtils.closeQuietly(connection);
+        }
+
+    }
+
+    private void cancelFavorComment(HttpServletRequest request, HttpServletResponse response) {
+        Connection connection = null;
+        try {
+            DataSource dataSource = (DataSource) getServletContext().getAttribute("dataSource");
+            connection = dataSource.getConnection();
+            PrintWriter out = response.getWriter();
+
+
+            UserService userService = new UserService(connection, request);
+
+
+            User me = userService.tryAutoLogin();
+
+            if (me == null) {
+                out.println(JSON.toJSON(new ActionResult(false, "未登录或登录已过期")));
+                return;
+            }
+
+            int commentID = Integer.parseInt(request.getParameter("commentID"));
+
+
+            ActionResult favorCommentResult = userService.cancelFavorComment(me.getUid(), commentID);
+
+            out.println(JSON.toJSON(favorCommentResult));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DbUtils.closeQuietly(connection);
+        }
+
+    }
+
 
 }

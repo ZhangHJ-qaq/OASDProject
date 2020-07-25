@@ -1,10 +1,12 @@
 package com.haojie.service;
 
-import com.haojie.bean.Image;
-import com.haojie.bean.ImageFavor;
-import com.haojie.bean.User;
+import com.haojie.bean.*;
 import com.haojie.dao.ImageFavorDao.ImageFavorDao;
 import com.haojie.dao.ImageFavorDao.ImageFavorDaoImpl;
+import com.haojie.dao.commentDao.CommentDao;
+import com.haojie.dao.commentDao.CommentDaoImpl;
+import com.haojie.dao.commentFavorDao.CommentFavorDao;
+import com.haojie.dao.commentFavorDao.CommentFavorDaoImpl;
 import com.haojie.dao.imageDao.ImageDao;
 import com.haojie.dao.imageDao.ImageDaoImpl;
 import com.haojie.dao.userDao.UserDao;
@@ -41,6 +43,7 @@ public class UserService {
         this.httpSession = request.getSession();
         this.connection = connection;
     }
+
 
     /**
      * 尝试用户的注册
@@ -285,9 +288,84 @@ public class UserService {
         UserDao userDao = new UserDaoImpl(this.connection);
         List<User> myFriendList = userDao.getMyFriendList(myuid);
 
-        SearchResult searchResult=getSearchResult(myFriendList,requestedPage,pageSize);
+        SearchResult searchResult = getSearchResult(myFriendList, requestedPage, pageSize);
         return searchResult;
 
+    }
+
+    public boolean hasFavoredTheComment(int uid, int commentID) {
+        try {
+            CommentFavorDao commentFavorDao = new CommentFavorDaoImpl(connection);
+            return commentFavorDao.favorExists(uid, commentID);
+
+        } catch (Exception e) {
+            return false;
+        }
+
+    }
+
+    public ActionResult favorComment(int uid, int commentID) {
+        try {
+            CommentFavorDao commentFavorDao = new CommentFavorDaoImpl(connection);
+            CommentDao commentDao = new CommentDaoImpl(connection);
+
+
+            //判断对应的评论是否存在
+            Comment comment = commentDao.getComment(commentID);
+            if (comment == null) return new ActionResult(false, "这个评论不存在");
+
+            //判断用户是否已经点赞了评论
+            boolean hasFavored = commentFavorDao.favorExists(uid, commentID);
+            if (hasFavored) return new ActionResult(false, "你已经点过赞了");
+
+
+            //判断在数据库中插入新点赞记录是否成功
+            boolean success = commentFavorDao.addCommentFavor(new CommentFavor(commentID, uid));
+
+            if (success) {
+                return new ActionResult(true, "点赞成功");
+            } else {
+                return new ActionResult(false, "点赞失败");
+            }
+
+
+        } catch (Exception e) {
+            return new ActionResult(false, "点赞失败");
+        }
+
+    }
+
+    public ActionResult cancelFavorComment(int uid, int commentID) {
+        try {
+            CommentFavorDao commentFavorDao = new CommentFavorDaoImpl(connection);
+            CommentDao commentDao = new CommentDaoImpl(connection);
+
+
+            //判断对应的评论是否存在
+            Comment comment = commentDao.getComment(commentID);
+            if (comment == null) return new ActionResult(false, "这个评论不存在");
+
+            //判断取消的是否是自己的点赞
+            if (comment.getUid() != uid) return new ActionResult(false, "你不能取消不是自己的点赞");
+
+            //判断用户是否已经点赞了评论
+            boolean hasFavored = commentFavorDao.favorExists(uid, commentID);
+            if (!hasFavored) return new ActionResult(false, "你还没有对这个评论点赞，不能去掉点赞");
+
+
+            //判断在数据库中删除点赞记录是否成功
+            boolean success = commentFavorDao.deleteCommentFavor(uid, commentID);
+
+            if (success) {
+                return new ActionResult(true, "取消点赞成功");
+            } else {
+                return new ActionResult(false, "取消点赞失败");
+            }
+
+
+        } catch (Exception e) {
+            return new ActionResult(false, "取消点赞失败");
+        }
     }
 
 
@@ -317,8 +395,6 @@ public class UserService {
         return searchResult;
 
     }
-
-
 
 
 }

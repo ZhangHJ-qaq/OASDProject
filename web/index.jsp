@@ -75,12 +75,16 @@
     </ol>
     <div class="carousel-inner">
         <div class="carousel-item active">
-            <img src="photos/medium/${requestScope.popularImageList.get(0).path}" class="d-block w-100"
-                 alt="${requestScope.popularImageList.get(0).title}">
+            <a href="details?imageID=${requestScope.popularImageList.get(0).imageID}">
+                <img src="photos/medium/${requestScope.popularImageList.get(0).path}" class="d-block w-100"
+                     alt="${requestScope.popularImageList.get(0).title}">
+            </a>
         </div>
         <c:forEach items="${requestScope.popularImageList}" var="image" begin="1">
             <div class="carousel-item">
-                <img src="photos/medium/${image.path}" class="d-block w-100" alt="${image.title}">
+                <a href="details?imageID=${image.imageID}">
+                    <img src="photos/medium/${image.path}" class="d-block w-100" alt="${image.title}">
+                </a>
             </div>
         </c:forEach>
     </div>
@@ -99,7 +103,9 @@
 <div id="hotPhotosDisplayArea" class="flex-container">
     <c:forEach var="image" items="${requestScope.freshImageList}">
         <div class="card flex-8-24">
-            <img src="photos/small/${image.path}" class="card-img-top img-thumbnail" alt="${image.title}">
+            <a href="details?imageID=${image.imageID}">
+                <img src="photos/small/${image.path}" class="card-img-top img-thumbnail" alt="${image.title}">
+            </a>
             <div class="card-body">
                 <h5 class="card-title">${image.title}</h5>
                 <p class="card-text">作者:${image.username}</p>
