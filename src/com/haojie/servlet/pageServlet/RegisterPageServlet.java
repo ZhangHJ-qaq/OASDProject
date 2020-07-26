@@ -33,10 +33,11 @@ public class RegisterPageServlet extends HttpServlet {
                 return;
             }
             request.getRequestDispatcher("/index").forward(request, response);
-            DbUtils.close(connection);
 
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
+        }finally {
+            DbUtils.closeQuietly(connection);
         }
     }
 }

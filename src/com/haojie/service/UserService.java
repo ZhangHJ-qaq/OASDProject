@@ -76,9 +76,6 @@ public class UserService {
             if (!password1.equals(password2)) {
                 return new ActionResult(false, "两次密码输入不一致");
             }
-            if (!(password1.length() >= 6 && password1.length() <= 12)) {
-                return new ActionResult(false, "密码必须在6-12位之间");
-            }
             if (!email.matches("([A-Za-z0-9_\\-\\.])+\\@([A-Za-z0-9_\\-\\.])+\\.([A-Za-z]{2,4})")) {
                 return new ActionResult(false, "邮箱格式不符合要求");
             }
@@ -143,7 +140,6 @@ public class UserService {
                 httpSession.setAttribute("username", username);
             }
 
-            DbUtils.close(connection);
             return result;
         } catch (Exception e) {
             return new ActionResult(false, "登陆失败");

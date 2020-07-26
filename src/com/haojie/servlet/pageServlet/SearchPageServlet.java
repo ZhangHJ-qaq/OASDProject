@@ -30,10 +30,11 @@ public class SearchPageServlet extends HttpServlet {
             User user = userService.tryAutoLogin();
             request.setAttribute("user", user);
             request.getRequestDispatcher("searchjsp").forward(request, response);
-            DbUtils.close(connection);
 
         } catch (SQLException e) {
 
+        }finally {
+            DbUtils.closeQuietly(connection);
         }
     }
 }

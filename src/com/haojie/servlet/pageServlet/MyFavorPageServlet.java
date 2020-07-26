@@ -38,9 +38,10 @@ public class MyFavorPageServlet extends HttpServlet {
 
             request.setAttribute("user", user);
             request.getRequestDispatcher("myfavorjsp").forward(request, response);
-            DbUtils.close(connection);
 
         } catch (Exception ignored) {
+        }finally {
+            DbUtils.closeQuietly(connection);
         }
 
     }

@@ -17,7 +17,6 @@ class RegisterPageClass {
         this.passwordOK = false;
         this.captchaArea = $("#captchaArea");
 
-
         //get all the input elements needed
     }
 
@@ -165,8 +164,8 @@ class RegisterPageClass {
             }
 
             let arrayToBeSubmitted = that.form.serializeArray();
-            arrayToBeSubmitted[1]['password1'] = md5(arrayToBeSubmitted['password1']);
-            arrayToBeSubmitted[2]['password2'] = md5(arrayToBeSubmitted['password2']);
+            arrayToBeSubmitted[2]['value'] = md5(arrayToBeSubmitted[2]['value']);
+            arrayToBeSubmitted[3]['value'] = md5(arrayToBeSubmitted[3]['value']);
 
 
             $.post("UserServlet?method=register", arrayToBeSubmitted)
@@ -189,5 +188,11 @@ class RegisterPageClass {
         this.captchaArea.append($(`<img src="getCaptcha?ver=${Math.random()}" alt="captcha">`));
     }
 
+    setCaptchaAreaOnClick() {
+        let that = this;
+        this.captchaArea.click(function () {
+            that.changeCaptcha();
+        })
+    }
 
 }

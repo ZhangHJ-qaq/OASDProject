@@ -4,5 +4,5 @@ $(function () {
     registerPageClass.setEmailInputOnChange();
     registerPageClass.setSubmitButtonOnClick();
     registerPageClass.setPasswordOnChange();
-
+    registerPageClass.setCaptchaAreaOnClick();
 })

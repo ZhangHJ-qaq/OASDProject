@@ -28,7 +28,7 @@
         </div>
         <input type="text" name="captcha" class="flex-1 form-control">
         <button type="button" class="btn btn-info flex-1" id="loginButton">登录</button>
-
+        <div>没有账号？<a href="register">注册</a></div>
     </form>
 </main>
 

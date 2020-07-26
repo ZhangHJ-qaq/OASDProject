@@ -33,10 +33,11 @@ public class MyPhotoPageServlet extends HttpServlet {
             }
             request.setAttribute("user", user);
             request.getRequestDispatcher("myphotojsp").forward(request, response);
-            DbUtils.close(connection);
 
         } catch (Exception ignored) {
 
+        }finally {
+            DbUtils.closeQuietly(connection);
         }
 
     }

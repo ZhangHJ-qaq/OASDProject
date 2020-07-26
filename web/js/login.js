@@ -1,7 +1,12 @@
 $(function () {
     let loginButton = $("#loginButton");
     let form = $("#form")
-    let captchaArea = $("#captchaArea");
+    let captchaArea = $("#captchaArea")
+
+    captchaArea.click(function () {
+        changeCaptcha();
+    })
+
     loginButton.click(function () {
         let arrayToBeSubmitted = form.serializeArray();
         arrayToBeSubmitted[1]['value'] = md5(arrayToBeSubmitted[1]['value']);
