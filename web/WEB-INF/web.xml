@@ -7,6 +7,8 @@
     <response-character-encoding>UTF-8</response-character-encoding>
     <request-character-encoding>UTF-8</request-character-encoding>
 
+
+    
     <servlet>
         <servlet-name>registerjsp</servlet-name>
         <jsp-file>/register.jsp</jsp-file>
@@ -27,7 +29,7 @@
 
     <servlet>
         <servlet-name>indexjsp</servlet-name>
-        <jsp-file>/index.jsp</jsp-file>
+        <jsp-file>/realindex.jsp</jsp-file>
     </servlet>
     <servlet-mapping>
         <servlet-name>indexjsp</servlet-name>
@@ -115,5 +117,7 @@
         <servlet-name>othersfavor</servlet-name>
         <url-pattern>/othersfavorjsp</url-pattern>
     </servlet-mapping>
+
+
 
 </web-app>

@@ -17,7 +17,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-@WebServlet("/index")
+@WebServlet(urlPatterns = {"/index"})
 public class IndexServlet extends HttpServlet {
 
     /**
