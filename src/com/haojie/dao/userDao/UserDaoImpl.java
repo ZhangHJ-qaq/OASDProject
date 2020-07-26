@@ -5,6 +5,7 @@ import com.haojie.bean.User;
 import com.haojie.dao.genericDao.GenericDao;
 import com.haojie.others.ActionResult;
 import com.haojie.utils.MD5Utils;
+import jdk.jfr.events.ExceptionThrownEvent;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -150,6 +151,17 @@ public class UserDaoImpl extends GenericDao<User> implements UserDao {
             return null;
         }
 
+    }
+
+    @Override
+    public boolean setCanBeSeenFavor(int uid, int canBeSeenFavor) {
+        try {
+            String sql = "update traveluser set canBeSeenFavors=? where UID=?";
+            this.update(connection, sql, canBeSeenFavor, uid);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
 

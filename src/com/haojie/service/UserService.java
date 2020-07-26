@@ -368,6 +368,23 @@ public class UserService {
         }
     }
 
+    public ActionResult setCanBeSeenFavor(int uid, int canBeSeenFavor) {
+        if (canBeSeenFavor != 0 && canBeSeenFavor != 1) {
+            return new ActionResult(false, "参数输入有误");
+        }
+
+        UserDao userDao = new UserDaoImpl(connection);
+
+        boolean success = userDao.setCanBeSeenFavor(uid, canBeSeenFavor);
+
+        if (success) {
+            return new ActionResult(true, "设置成功");
+        } else {
+            return new ActionResult(false, "设置失败");
+        }
+
+    }
+
 
     private SearchResult getSearchResult(List<User> originalUserList, int requestedPage, int pageSize) {
 

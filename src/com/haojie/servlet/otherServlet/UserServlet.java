@@ -20,6 +20,7 @@ import com.haojie.others.ActionResult;
 import com.haojie.others.SearchResult;
 import com.haojie.others.UploadPhotoInfo;
 import com.haojie.service.*;
+import com.haojie.servlet.pageServlet.IndexServlet;
 import com.haojie.utils.MyUtils;
 import com.haojie.utils.PicReduce;
 import org.apache.commons.dbutils.DbUtils;
@@ -143,6 +144,10 @@ public class UserServlet extends HttpServlet {
             }
             if (request.getParameter("method").equals("cancelFavorComment")) {
                 cancelFavorComment(request, response);
+                return;
+            }
+            if (request.getParameter("method").equals("setCanBeSeenFavor")) {
+                setCanBeSeenFavor(request, response);
                 return;
             }
 
@@ -1074,5 +1079,36 @@ public class UserServlet extends HttpServlet {
 
     }
 
+    private void setCanBeSeenFavor(HttpServletRequest request, HttpServletResponse response) {
+        Connection connection = null;
+        try {
+            DataSource dataSource = (DataSource) getServletContext().getAttribute("dataSource");
+            connection = dataSource.getConnection();
+            PrintWriter out = response.getWriter();
+
+
+            UserService userService = new UserService(connection, request);
+
+
+            User me = userService.tryAutoLogin();
+
+            if (me == null) {
+                out.println(JSON.toJSON(new ActionResult(false, "未登录或登录已过期")));
+                return;
+            }
+
+            int canBeSeenFavor = Integer.parseInt(request.getParameter("canBeSeenFavor"));
+
+            ActionResult sendResult = userService.setCanBeSeenFavor(me.getUid(), canBeSeenFavor);
+
+            out.println(JSON.toJSON(sendResult));
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DbUtils.closeQuietly(connection);
+        }
+    }
 
 }

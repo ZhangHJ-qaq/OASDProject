@@ -22,7 +22,8 @@ public class ImageDaoImpl extends GenericDao<Image> implements ImageDao {
     @Override
     public List<Image> getMostPopularNImages(int n) {
         try {
-            String sql = "select travelimagefavor.ImageID,Title,Description,Latitude,Longitude,CityCode,Country_RegionCodeISO,travelimage.UID,Content,PATH,DateReleased from travelimagefavor inner join travelimage on travelimage.ImageID=travelimagefavor.ImageID group by ImageID order by count(travelimagefavor.ImageID) desc limit ?";
+            String sql = "select travelimagefavor.ImageID,Title,Description,Latitude,Longitude," +
+                    "CityCode,Country_RegionCodeISO,travelimage.UID,Content,PATH,DateReleased from travelimagefavor inner join travelimage on travelimage.ImageID=travelimagefavor.ImageID group by ImageID order by count(travelimagefavor.ImageID) desc limit ?";
             List<Image> popularImageList = this.queryForList(connection, sql, n);
             return popularImageList;
         } catch (Exception exception) {
@@ -52,16 +53,38 @@ public class ImageDaoImpl extends GenericDao<Image> implements ImageDao {
         String sql = null;
         if (howToOrder.equals("popularity")) {
             if (howToSearch.equals("title")) {
-                sql = "select travelimagefavor.ImageID, count(travelimagefavor.ImageID) as favorCount, Title, Description, PATH\n" +
+                sql = "select travelimage.ImageID,\n" +
+                        "       count(travelimagefavor.ImageID) as favorCount,\n" +
+                        "       Title,\n" +
+                        "       Description,\n" +
+                        "       Longitude,\n" +
+                        "       Latitude,\n" +
+                        "       CityCode,\n" +
+                        "       Country_RegionCodeISO,\n" +
+                        "       travelimage.UID,\n" +
+                        "       PATH,\n" +
+                        "       Content,\n" +
+                        "       DateReleased\n" +
                         "from travelimagefavor\n" +
-                        "         inner join travelimage t on travelimagefavor.ImageID = t.ImageID where Title regexp ?\n" +
+                        "         right join travelimage on travelimage.ImageID = travelimagefavor.ImageID where Title regexp ?\n" +
                         "group by ImageID\n" +
                         "order by favorCount desc";
 
             } else if (howToSearch.equals("content")) {
-                sql = "select travelimagefavor.ImageID, count(travelimagefavor.ImageID) as favorCount, Title, Description, PATH\n" +
+                sql = "select travelimage.ImageID,\n" +
+                        "       count(travelimagefavor.ImageID) as favorCount,\n" +
+                        "       Title,\n" +
+                        "       Description,\n" +
+                        "       Longitude,\n" +
+                        "       Latitude,\n" +
+                        "       CityCode,\n" +
+                        "       Country_RegionCodeISO,\n" +
+                        "       travelimage.UID,\n" +
+                        "       PATH,\n" +
+                        "       Content,\n" +
+                        "       DateReleased\n" +
                         "from travelimagefavor\n" +
-                        "         inner join travelimage t on travelimagefavor.ImageID = t.ImageID where Content regexp ?\n" +
+                        "         right join travelimage on travelimage.ImageID = travelimagefavor.ImageID where Content regexp ?\n" +
                         "group by ImageID\n" +
                         "order by favorCount desc";
 
@@ -69,10 +92,40 @@ public class ImageDaoImpl extends GenericDao<Image> implements ImageDao {
 
         } else if (howToOrder.equals("time")) {
             if (howToSearch.equals("title")) {
-                sql = "select ImageID,Title,Description,PATH from travelimage where Title regexp ? order by DateReleased desc";
+                sql = "select travelimage.ImageID,\n" +
+                        "       count(travelimagefavor.ImageID) as favorCount,\n" +
+                        "       Title,\n" +
+                        "       Description,\n" +
+                        "       Longitude,\n" +
+                        "       Latitude,\n" +
+                        "       CityCode,\n" +
+                        "       Country_RegionCodeISO,\n" +
+                        "       travelimage.UID,\n" +
+                        "       PATH,\n" +
+                        "       Content,\n" +
+                        "       DateReleased\n" +
+                        "from travelimagefavor\n" +
+                        "         right join travelimage on travelimage.ImageID = travelimagefavor.ImageID where Title regexp ?\n" +
+                        "group by ImageID\n" +
+                        "order by DateReleased desc";
 
             } else if (howToSearch.equals("content")) {
-                sql = "select ImageID,Title,Description,PATH from travelimage where Content regexp ? order by DateReleased desc";
+                sql = "select travelimage.ImageID,\n" +
+                        "       count(travelimagefavor.ImageID) as favorCount,\n" +
+                        "       Title,\n" +
+                        "       Description,\n" +
+                        "       Longitude,\n" +
+                        "       Latitude,\n" +
+                        "       CityCode,\n" +
+                        "       Country_RegionCodeISO,\n" +
+                        "       travelimage.UID,\n" +
+                        "       PATH,\n" +
+                        "       Content,\n" +
+                        "       DateReleased\n" +
+                        "from travelimagefavor\n" +
+                        "         right join travelimage on travelimage.ImageID = travelimagefavor.ImageID where Content regexp ?\n" +
+                        "group by ImageID\n" +
+                        "order by DateReleased desc";
 
             }
         }

@@ -52,5 +52,7 @@ public interface UserDao {
 
     public abstract List<User> getMyFriendList(int myuid);
 
+    public abstract boolean setCanBeSeenFavor(int uid,int canBeSeenFavor);
+
 }
 

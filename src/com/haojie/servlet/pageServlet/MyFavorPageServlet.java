@@ -28,10 +28,14 @@ public class MyFavorPageServlet extends HttpServlet {
             connection = dataSource.getConnection();
             UserService userService = new UserService(connection, request);
             User user = userService.tryAutoLogin();
+
             if (user == null) {
                 request.getRequestDispatcher("login").forward(request, response);
                 return;
             }
+
+
+
             request.setAttribute("user", user);
             request.getRequestDispatcher("myfavorjsp").forward(request, response);
             DbUtils.close(connection);

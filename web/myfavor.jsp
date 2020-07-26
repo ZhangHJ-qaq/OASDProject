@@ -71,6 +71,29 @@
 <main class="flex-container">
     <div class="card flex-24-24">
         <div class="card-header">
+            设置
+        </div>
+        <form class="card-body flex-container" id="form">
+            <label>别人是否可以查看你的收藏？</label>
+
+            <c:choose>
+                <c:when test="${requestScope.user.canBeSeenFavors==1}">
+                    <input type="radio" name="canBeSeenFavor" checked value="1">可
+                    <input type="radio" name="canBeSeenFavor" value="0">不可
+                </c:when>
+                <c:when test="${requestScope.user.canBeSeenFavors!=1}">
+                    <input type="radio" name="canBeSeenFavor" value="1">可
+                    <input type="radio" name="canBeSeenFavor" checked value="0">不可
+                </c:when>
+            </c:choose>
+
+            <button class="btn btn-info" type="button" id="configButton">确定</button>
+        </form>
+    </div>
+
+
+    <div class="card flex-24-24">
+        <div class="card-header">
             我的足迹
         </div>
         <div class="card-body flex-container" >

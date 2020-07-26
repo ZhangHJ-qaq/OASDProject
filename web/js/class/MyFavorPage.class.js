@@ -5,6 +5,8 @@ class MyFavorPageClass extends PageWithPagination {
         this.imageArea = $("#imageArea");
         this.footageArea = $("#footageArea");
         this.clearFootageButton = $("#clearFootageButton");
+        this.form = $("#form");
+        this.configButton = $("#configButton");
     }
 
     search(requestedPage) {
@@ -47,7 +49,7 @@ class MyFavorPageClass extends PageWithPagination {
             );
             let unfavorButton = $(element.get(0).querySelector(".btn-danger"));
             unfavorButton.click(function () {
-                that.unfavor()
+                that.unfavor(imageList[i]['imageID'])
             })
             that.imageArea.append(element);
         }
@@ -56,9 +58,10 @@ class MyFavorPageClass extends PageWithPagination {
 
 
     unfavor(imageID) {
+        let that=this;
         let c = confirm("你确定要取消收藏吗？");
         if (!c) return;
-        $.post(`UserServlet?method=unfavor&imageID=${imageList[i]['imageID']}`)
+        $.post(`UserServlet?method=unfavor&imageID=${imageID}`)
             .done(function (data) {
                 let actionResult = JSON.parse(data);
                 alert(actionResult['info']);
@@ -86,7 +89,7 @@ class MyFavorPageClass extends PageWithPagination {
 
                         let browseRecord = JSON.parse(json);
                         that.footageArea.empty()
-                        for (let i = 0; i <= browseRecord['records'].length-1; i++) {
+                        for (let i = 0; i <= browseRecord['records'].length - 1; i++) {
                             let element = $(
                                 `<li class="list-group-item flex-6-24">
                                     <span class="footageTitle">${browseRecord['records'][i]['title']}</span>
@@ -104,7 +107,7 @@ class MyFavorPageClass extends PageWithPagination {
                         //设置点击了清空足迹以后的行为
 
                         that.clearFootageButton.click(function () {
-                            document.cookie=`${uid}=;expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+                            document.cookie = `${uid}=;expires=Thu, 01 Jan 1970 00:00:00 GMT`;
                             alert("清空成功！");
                             that.footageArea.empty();
                         })
@@ -118,5 +121,24 @@ class MyFavorPageClass extends PageWithPagination {
     }
 
 
+    /**
+     * 设置 调整是否允许好友查看我的收藏时 的事件
+     */
+    setConfigButtonOnClick() {
+        let that = this;
+
+        that.configButton.click(function () {
+            $.post("UserServlet?method=setCanBeSeenFavor",that.form.serializeArray())
+                .done(function (data) {
+                    let result=JSON.parse(data);
+                    alert(result['info'])
+
+                })
+                .fail(function () {
+                    alert("失败了，请稍后再试");
+                })
+        })
+
+    }
 }
 

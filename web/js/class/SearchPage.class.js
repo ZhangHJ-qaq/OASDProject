@@ -1,4 +1,4 @@
-class SearchPageClass extends PageWithPagination{
+class SearchPageClass extends PageWithPagination {
     constructor(pageSize) {
         super()
         this.form = $("#form");
@@ -45,6 +45,8 @@ class SearchPageClass extends PageWithPagination{
             let path = imageList[i]['path'];
             let desc = imageList[i]['description'];
             let title = imageList[i]['title'];
+            let favorCount = imageList[i]['favorCount'];
+            let dateReleased = new Date(imageList[i]['dateReleased']);
 
             let element = $(`
             <div class="media">
@@ -52,7 +54,9 @@ class SearchPageClass extends PageWithPagination{
                 </a>
                 <div class="media-body">
                     <h5 class="mt-0">${title}</h5>
-                    ${desc}
+                    <div>${desc}</div>
+                    <div>收藏数：${favorCount}</div>
+                    <div>发布日期：${dateReleased}</div>
                 </div>
             </div>
 
