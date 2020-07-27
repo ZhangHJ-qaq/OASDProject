@@ -6,6 +6,9 @@ import com.haojie.dao.sysmessageDao.SysMessageDaoImpl;
 
 import java.sql.Connection;
 
+/**
+ * The service layer for System message
+ */
 public class SysMessageService {
     private Connection connection;
 

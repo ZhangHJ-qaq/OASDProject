@@ -109,6 +109,7 @@ class MyFriendPageClass extends PageWithPagination {
             {name: "requestedPage", value: requestedPage},
             {name: "pageSize", value: this.pageSize},
         ];
+        this.friendListArea.empty();
         $.post("UserServlet?method=getMyFriend", serializedArray)
             .done(function (data) {
                 that.friendListArea.empty();
@@ -122,7 +123,6 @@ class MyFriendPageClass extends PageWithPagination {
 
     displayMyFriend(searchResult) {
         let that = this;
-        this.friendListArea.empty();
         for (let i = 0; i <= searchResult['userList'].length - 1; i++) {
             let element = $(
                 `<div class="media">

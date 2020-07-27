@@ -15,6 +15,7 @@ class MyFavorPageClass extends PageWithPagination {
             {"name": "requestedPage", "value": requestedPage},
             {"name": "pageSize", "value": this.pagesize},
         ];
+        that.imageArea.empty();
         $.post("ImageServlet?method=myfavor", serializedArray)
             .done(function (data) {
                 let searchResult = JSON.parse(data);
@@ -31,7 +32,6 @@ class MyFavorPageClass extends PageWithPagination {
     setImage(searchResult) {
         let that = this;
         let imageList = searchResult['imageList'];
-        that.imageArea.empty();
         for (let i = 0; i < imageList.length; i++) {
             let element = $(
                 `<div class="media">
@@ -58,7 +58,7 @@ class MyFavorPageClass extends PageWithPagination {
 
 
     unfavor(imageID) {
-        let that=this;
+        let that = this;
         let c = confirm("你确定要取消收藏吗？");
         if (!c) return;
         $.post(`UserServlet?method=unfavor&imageID=${imageID}`)
@@ -128,9 +128,9 @@ class MyFavorPageClass extends PageWithPagination {
         let that = this;
 
         that.configButton.click(function () {
-            $.post("UserServlet?method=setCanBeSeenFavor",that.form.serializeArray())
+            $.post("UserServlet?method=setCanBeSeenFavor", that.form.serializeArray())
                 .done(function (data) {
-                    let result=JSON.parse(data);
+                    let result = JSON.parse(data);
                     alert(result['info'])
 
                 })

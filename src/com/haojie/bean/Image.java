@@ -4,7 +4,7 @@ import java.sql.Date;
 import java.sql.Timestamp;
 
 /**
- * Image类 是bean
+ * The entity class for photos
  */
 public class Image {
     private int ImageID;

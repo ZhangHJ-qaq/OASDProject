@@ -247,12 +247,24 @@ public class UserService {
         }
     }
 
+    /**
+     * To insert an image to database
+     * @param user The user object
+     * @param image The image object
+     * @return ActionResult Object
+     */
     public ActionResult insertImageToDB(User user, Image image) {
         ImageDao imageDao = new ImageDaoImpl(connection);
         if (user == null) return new ActionResult(false, "没有登陆或登录已经过期");
         return imageDao.insertImage(user, image);
     }
 
+    /**
+     * To delete an image from database
+     * @param user The user object
+     * @param imageID The imageID
+     * @return ActionResult Object
+     */
     public ActionResult deleteImageFromDB(User user, int imageID) {
         ImageDao imageDao = new ImageDaoImpl(connection);
         if (!imageDao.imageExists(user, imageID)) return new ActionResult(false, "你不能删除自己没有的图片");
@@ -260,6 +272,13 @@ public class UserService {
         return imageDao.deleteImage(imageID);
     }
 
+    /**
+     * To modify an image in database
+     * @param user The user object
+     * @param imageID The imageID
+     * @param image The new image Object
+     * @return ActionResult Object
+     */
     public ActionResult modifyImageInDB(User user, int imageID, Image image) {
         ImageDao imageDao = new ImageDaoImpl(connection);
         if (!imageDao.imageExists(user, imageID)) return new ActionResult(false, "你不能删除自己没有的图片");
@@ -269,6 +288,13 @@ public class UserService {
 
     }
 
+    /**
+     * Search possible users to make friends with
+     * @param username username input
+     * @param requestedPage requestedPage
+     * @param pageSize pageSize
+     * @return SearchResultObject
+     */
     public SearchResult searchUserToAddFriend(String username, int requestedPage, int pageSize) {
 
         UserDao userDao = new UserDaoImpl(this.connection);
@@ -280,6 +306,13 @@ public class UserService {
 
     }
 
+    /**
+     * Get all friends of a user
+     * @param myuid user's uid
+     * @param requestedPage requestedPage
+     * @param pageSize pageSize
+     * @return SearchResult
+     */
     public SearchResult searchMyFriend(int myuid, int requestedPage, int pageSize) {
         UserDao userDao = new UserDaoImpl(this.connection);
         List<User> myFriendList = userDao.getMyFriendList(myuid);
@@ -289,6 +322,12 @@ public class UserService {
 
     }
 
+    /**
+     * To check whether a user has favored a comment
+     * @param uid uid
+     * @param commentID commentID
+     * @return If has favored, returns true. Otherwise returns false
+     */
     public boolean hasFavoredTheComment(int uid, int commentID) {
         try {
             CommentFavorDao commentFavorDao = new CommentFavorDaoImpl(connection);
@@ -300,6 +339,12 @@ public class UserService {
 
     }
 
+    /**
+     * Favor a comment
+     * @param uid user's uid
+     * @param commentID commentID
+     * @return ActionResult object
+     */
     public ActionResult favorComment(int uid, int commentID) {
         try {
             CommentFavorDao commentFavorDao = new CommentFavorDaoImpl(connection);
@@ -331,6 +376,12 @@ public class UserService {
 
     }
 
+    /**
+     * To cancel favor a comment
+     * @param uid User's uid
+     * @param commentID commentID
+     * @return ActionResult Object
+     */
     public ActionResult cancelFavorComment(int uid, int commentID) {
         try {
             CommentFavorDao commentFavorDao = new CommentFavorDaoImpl(connection);
@@ -364,6 +415,12 @@ public class UserService {
         }
     }
 
+    /**
+     * Config whether a user's favor can be seen by friends
+     * @param uid user's uid
+     * @param canBeSeenFavor 1 or 0
+     * @return ActionResult object.
+     */
     public ActionResult setCanBeSeenFavor(int uid, int canBeSeenFavor) {
         if (canBeSeenFavor != 0 && canBeSeenFavor != 1) {
             return new ActionResult(false, "参数输入有误");

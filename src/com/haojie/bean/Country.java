@@ -1,5 +1,9 @@
 package com.haojie.bean;
 
+
+/**
+ * The entity class for country
+ */
 public class Country {
     String ISO;
     String fipsCountry_RegionCode;

@@ -16,6 +16,9 @@ import java.sql.Connection;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * The service layer for friend request
+ */
 public class FriendRequestService {
     private Connection connection;
 
@@ -25,7 +28,7 @@ public class FriendRequestService {
 
 
     /**
-     * 向数据库中添加请求
+     * To add a request into a database.
      *
      * @param friendRequest
      * @return
@@ -57,6 +60,11 @@ public class FriendRequestService {
 
     }
 
+    /**
+     * To get the friend requests I have received
+     * @param myUid uid of the operator
+     * @return friend request list
+     */
     public List<FriendRequest> getFriendRequestsIReceived(int myUid) {
         try {
             FriendRequestDao friendRequestDao = new FriendRequestDaoImpl(connection);
@@ -69,6 +77,13 @@ public class FriendRequestService {
 
     }
 
+
+    /**
+     * To refuse a request
+     * @param me I, user object
+     * @param requestID requestID
+     * @return ActionResult Object
+     */
     public ActionResult refuseRequest(User me, int requestID) {
 
         FriendRequestDao friendRequestDao = new FriendRequestDaoImpl(connection);
@@ -100,6 +115,12 @@ public class FriendRequestService {
 
     }
 
+    /**
+     * To accept a request
+     * @param me I, user object
+     * @param requestID requestID
+     * @return ActionResult Object
+     */
     public ActionResult acceptRequest(User me, int requestID) {
         try {
             FriendRequestDao friendRequestDao = new FriendRequestDaoImpl(connection);

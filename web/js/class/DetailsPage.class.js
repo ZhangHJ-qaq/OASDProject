@@ -47,6 +47,7 @@ class DetailsPageClass extends PageWithPagination {
             {"name": "pageSize", "value": this.pagesize},
             {"name": "howToOrder", "value": this.howToOrder}
         ];
+        that.commentArea.empty();
         $.post(`CommentServlet?method=getComment&imageID=${that.imageID}`, serializedArray)
             .done(function (data) {
                 let searchResult = JSON.parse(data);
@@ -80,7 +81,6 @@ class DetailsPageClass extends PageWithPagination {
      */
     displayComments(searchResult) {
         let that = this;
-        that.commentArea.empty();
         for (let i = 0; i <= searchResult['commentList'].length - 1; i++) {
             let element;
 

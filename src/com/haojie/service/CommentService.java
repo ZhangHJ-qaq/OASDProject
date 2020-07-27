@@ -15,6 +15,9 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The service layer for comment
+ */
 public class CommentService {
 
     private Connection connection;
@@ -23,6 +26,11 @@ public class CommentService {
         this.connection = connection;
     }
 
+    /**
+     * To add a comment
+     * @param newComment new comment object
+     * @return
+     */
     public ActionResult addComment(Comment newComment) {
         try {
             CommentDao commentDao = new CommentDaoImpl(connection);
@@ -46,6 +54,16 @@ public class CommentService {
 
     }
 
+    /**
+     * To get comments in one page
+     * @param imageID imageID
+     * @param user The user
+     * @param requestedPage requestedPage
+     * @param pageSize pageSize: how many elements are there on one page?
+     * @param howToOrder Two options. "time" and "popularity"
+     * @param request The HttpServletRequest
+     * @return SearchResult Object
+     */
     public SearchResult getComments(int imageID, User user, int requestedPage, int pageSize, String howToOrder,HttpServletRequest request) {
         try {
             CommentDao commentDao = new CommentDaoImpl(connection);

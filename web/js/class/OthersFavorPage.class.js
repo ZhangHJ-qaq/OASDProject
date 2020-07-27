@@ -23,7 +23,7 @@ class OthersFavorPageClass extends PageWithPagination {
             {"name": "requestedPage", "value": requestedPage},
             {"name": "pageSize", "value": this.pagesize},
         ];
-
+        that.imageArea.empty();
         $.post(`UserServlet?method=othersfavor&username=${this.othersusername}`, serializedArray)
             .done(function (data) {
                 let searchResult = JSON.parse(data);
@@ -45,7 +45,6 @@ class OthersFavorPageClass extends PageWithPagination {
     setImage(searchResult) {
         let that = this;
         let imageList = searchResult['imageList'];
-        that.imageArea.empty();
         for (let i = 0; i < imageList.length; i++) {
             let element = $(
                 `<div class="media">

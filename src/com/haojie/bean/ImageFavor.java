@@ -1,7 +1,7 @@
 package com.haojie.bean;
 
 /**
- * ImageFavor类 是bean
+ * The entity class for favor records
  */
 public class ImageFavor {
     private int favorID;

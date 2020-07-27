@@ -11,6 +11,7 @@ class MyPhotoPageClass extends PageWithPagination {
             {"name": "pageSize", "value": this.pageSize},
             {"name": "requestedPage", "value": requestedPage}
         ];
+        this.imageArea.empty();
         $.post("ImageServlet?method=myphoto", serializedArray)
             .done(function (data) {
                 let searchResult = JSON.parse(data);
@@ -24,7 +25,6 @@ class MyPhotoPageClass extends PageWithPagination {
     }
 
     setImage(searchResult) {
-        this.imageArea.empty();
         let that = this;
         let imageList = searchResult['imageList'];
         for (let i = 0; i < imageList.length; i++) {

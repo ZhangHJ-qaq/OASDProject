@@ -4,7 +4,7 @@ import java.sql.Date;
 import java.sql.Timestamp;
 
 /**
- * User类 是bean
+ * The entity class for user
  */
 public class User {
     private int uid;

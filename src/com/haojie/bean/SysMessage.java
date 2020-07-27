@@ -2,6 +2,10 @@ package com.haojie.bean;
 
 import org.omg.PortableInterceptor.INACTIVE;
 
+
+/**
+ * The entity class for system message sent to the user
+ */
 public class SysMessage {
     private int messageID;
     private int receiverUID;

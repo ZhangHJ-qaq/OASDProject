@@ -28,7 +28,7 @@ public class MyListener implements ServletContextListener,
     // -------------------------------------------------------
 
     /**
-     * 此处初始化线程池全局变量
+     * To initiate the global datasource (connection pool) variable here after the context has initialized
      *
      * @param sce
      */
@@ -39,6 +39,8 @@ public class MyListener implements ServletContextListener,
       */
         ComboPooledDataSource comboPooledDataSource = null;
         try {
+
+            //Set the properties of datasource.
             comboPooledDataSource = new ComboPooledDataSource();
             comboPooledDataSource.setDriverClass(Config.driverClassName);
             comboPooledDataSource.setUser(Config.username);
@@ -48,6 +50,7 @@ public class MyListener implements ServletContextListener,
             e.printStackTrace();
         }
 
+        //Attach the datasource variable to the servlet context.
         ServletContext servletContext = sce.getServletContext();
         servletContext.setAttribute("dataSource", comboPooledDataSource);
 

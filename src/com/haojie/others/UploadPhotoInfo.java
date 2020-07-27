@@ -16,6 +16,9 @@ import javax.servlet.http.Part;
 import java.security.SecureRandom;
 import java.sql.Connection;
 
+/**
+ * The object that encapsulates all the uploaded info about an image to be uploaded.
+ */
 public class UploadPhotoInfo {
     private String title;
     private String description;

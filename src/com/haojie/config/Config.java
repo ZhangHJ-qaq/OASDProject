@@ -1,13 +1,15 @@
 package com.haojie.config;
 
 /**
- * 此处存储的是数据库连接有关的常量
+ * Here we have some constants related to the parameters you need to connect to the database!
  */
 public class Config {
     public static final String jdbcURL = "jdbc:mysql://localhost/travel?serverTimezone=GMT%2B8";
-    public static final String username = "root";
-    public static final String password = "000000";
+
+    //You can change the username, password and driver class name according to your runtime environment
+    public static final String username = "travel";
+    public static final String password = "LDDbDhKPmGJ5A7Jt";
+
     public static final String driverClassName = "com.mysql.jdbc.Driver";
-    public static final int maxPoolSize=50;
-    public static final int minIdle=10;
+
 }

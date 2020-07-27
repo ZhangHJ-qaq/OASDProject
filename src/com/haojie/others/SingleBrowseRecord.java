@@ -1,5 +1,8 @@
 package com.haojie.others;
 
+/**
+ * A single browse record of a single image.
+ */
 public class SingleBrowseRecord {
     private String title;
     private int imageID;

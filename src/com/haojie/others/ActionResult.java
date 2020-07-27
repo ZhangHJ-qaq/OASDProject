@@ -2,10 +2,14 @@ package com.haojie.others;
 
 
 /**
- * 封装了各种操作（如：登录，注册，收藏图片）的结果对象
+ * This can encapsulate the result of some actions.
  */
 public class ActionResult {
+
+    //Whether the action has succeeded
     private boolean success;
+
+    //The info
     private String info;
 
     public ActionResult(boolean success, String info) {

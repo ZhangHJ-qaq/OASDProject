@@ -1,5 +1,9 @@
 package com.haojie.bean;
 
+
+/**
+ * The entity class for the city
+ */
 public class City {
     int geoNameID;
     String asciiName;

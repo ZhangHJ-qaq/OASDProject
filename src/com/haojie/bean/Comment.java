@@ -2,6 +2,9 @@ package com.haojie.bean;
 
 import java.sql.Timestamp;
 
+/**
+ * The entity class for the comments users leave behind the picture
+ */
 public class Comment {
     private int commentID;
     private int imageID;

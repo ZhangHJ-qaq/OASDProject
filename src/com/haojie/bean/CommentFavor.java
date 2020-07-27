@@ -1,5 +1,9 @@
 package com.haojie.bean;
 
+
+/**
+ * The entity class for the favor records(in the database) of users
+ */
 public class CommentFavor {
     private int commentFavorID;
     private int commentID;

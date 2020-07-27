@@ -7,81 +7,119 @@ import com.haojie.others.ActionResult;
 import java.util.List;
 
 /**
- * 为Image类设计的Dao层
+ * The DAO layer for image
  */
 public interface ImageDao {
 
     /**
-     * 根据给出的n 得到最热门的n张图片
+     * Get the most popular n images
      *
-     * @param n 要得到的图片数量
-     * @return 图片的列表
+     * @param n The num of images you want to get.
+     * @return The image list that contains most popular n images
      */
     public abstract List<Image> getMostPopularNImages(int n);
 
     /**
-     * 根据给出的n 得到最新上传的几张图片
+     * Get the freshest n images
      *
-     * @param n 图片数量
-     * @return 图片列表
+     * @param n The number of images
+     * @return The list of images that contains freshest n images
      */
     public abstract List<Image> getMostFreshNImages(int n);
 
     /**
-     * 根据给出的搜索方法进行全表搜索
+     * To search the images in the database.
      *
-     * @param howToSearch 可选值为title或content 前者表示按标题搜索 后者表示按内容搜索
-     * @param howToOrder  可选值为time或popularity 前者表示按时间排序 后者表示按热度排序 均为倒序
-     * @param input       搜索的输入
-     * @return 图片列表
+     * @param howToSearch Two options available, "title" and "content"
+     * @param howToOrder  Two options available, they're "time" and "popularity"
+     *                    In the first case, the result is sorted in a descendant chronicle order.
+     *                    In the second case, the result is sorted in a descendant popularity order.
+     * @param input       The input from the user
+     * @return The image list that have been gotten.
      */
     public abstract List<Image> search(String howToSearch, String howToOrder, String input);
 
     /**
-     * 得到用户所有的图片列表
+     * Get all the photos a user has
      *
-     * @param user 用户对象
-     * @return 对应的图片列表
+     * @param user The user entity object.
+     * @return The image list he or she has.
      */
     public abstract List<Image> getMyPhotos(User user);
 
 
     /**
-     * 得到用户所有的收藏了的图片的列表
+     * Get all the images a user have favored
      *
-     * @param user 用户对象
-     * @return 用户收藏了的图片列表
+     * @param user The user entity object
+     * @return The image list he or she has favored
      */
     public abstract List<Image> getFavor(User user);
 
     /**
-     * 根据imageID，得到对应的图片对象
+     * Get the object entity of an image
      *
-     * @param imageID imageID
-     * @return 对应的图片对象
+     * @param imageID The imageID that represents the image
+     * @return The image entity object
      */
     public abstract Image getImage(int imageID);
 
     /**
-     * 根据imageID，得到图片是否在数据库中存在
+     * To check whether the image exists in the database.
      *
      * @param imageID imageID
-     * @return 如果存在为true，不存在为false
+     * @return If exists, returns true. Otherwise, returns false
      */
     public abstract boolean imageExists(int imageID);
 
+    /**
+     * To check whether the image exists in the database.
+     *
+     * @param fileName The fileName
+     * @return If exists, returns true. Otherwise, returns false
+     */
     public abstract boolean imageExists(String fileName);
 
-    public abstract boolean imageExists(User user,int imageID);
+    /**
+     * To check whether the image exists in the database.
+     *
+     * @param user The user entity
+     * @param imageID The imageID
+     * @return If exists, returns true. Otherwise, returns false
+     */
+    public abstract boolean imageExists(User user, int imageID);
 
-
+    /**
+     * To insert a new image into databse.
+     * @param user The user entity object
+     * @param image The image entity object
+     * @return If successful ,returns true. Otherwise, false.
+     */
     public abstract ActionResult insertImage(User user, Image image);
 
+    /**
+     * To delete an image from the database
+     * @param imageID imageID
+     * @return ActionResult Object
+     */
     public abstract ActionResult deleteImage(int imageID);
 
-    public abstract Image getImage(User user,int imageID);
+    /**
+     * To get the entity object of an image from the database
+     * @param user User entity
+     * @param imageID imageID
+     * @return The image entity object
+     */
+    public abstract Image getImage(User user, int imageID);
 
-    public abstract ActionResult modifyImage(User user,int imageID,Image image);
+    /**
+     * To modify the image
+     * @param user The user object
+     * @param imageID The imageID
+     * @param image The new image entity object
+     * @return ActionResult Object
+     */
+    public abstract ActionResult modifyImage(User user, int imageID, Image image);
 
 
 }

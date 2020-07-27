@@ -19,6 +19,7 @@ class AddFriendPageClass extends PageWithPagination {
     search(requestedPage) {
         let that = this;
         let serializedArray = this.form.serializeArray();
+        this.userDisplayArea.empty();
         serializedArray[serializedArray.length] = {"name": "requestedPage", "value": requestedPage};
         serializedArray[serializedArray.length] = {"name": "pageSize", "value": that.pageSize};
         $.post("UserServlet?method=searchFriendToAdd", serializedArray)
@@ -33,7 +34,6 @@ class AddFriendPageClass extends PageWithPagination {
 
     displayUser(searchResult) {
         let that = this;
-        this.userDisplayArea.empty();
         for (let i = 0; i <= searchResult['userList'].length - 1; i++) {
             let element = $(
                 `<div class="media">

@@ -7,6 +7,9 @@ import org.apache.commons.dbutils.DbUtils;
 
 import java.sql.Connection;
 
+/**
+ * The service layer of friend record
+ */
 public class FriendRecordService {
     private Connection connection;
 
@@ -14,6 +17,13 @@ public class FriendRecordService {
         this.connection = connection;
     }
 
+
+    /**
+     * Make two users friend
+     * @param uid1 the uid of user A
+     * @param uid2 the uid of user B
+     * @return If success, returns true. Else, returns false.
+     */
     public boolean makeFriend(int uid1, int uid2) {
         try {
             FriendRecordDao friendRecordDao = new FriendRecordDaoImpl(connection);
@@ -38,6 +48,12 @@ public class FriendRecordService {
 
     }
 
+    /**
+     * To make two users no longer friends
+     * @param uid1 The uid of user A
+     * @param uid2 The uid of user B
+     * @return
+     */
     public boolean deleteFriend(int uid1, int uid2) {
         try {
             FriendRecordDao friendRecordDao = new FriendRecordDaoImpl(connection);

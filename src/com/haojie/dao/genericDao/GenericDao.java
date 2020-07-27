@@ -14,7 +14,7 @@ import java.util.List;
 
 
 /**
- * 通用的DAO层
+ * The generic dao object.
  * @param <T>
  */
 public class GenericDao<T> {

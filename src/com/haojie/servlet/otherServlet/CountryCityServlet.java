@@ -23,6 +23,9 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.util.List;
 
+/**
+ * The servlet of country and city to handle with ajax requests
+ */
 @WebServlet("/CountryCityServlet")
 public class CountryCityServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

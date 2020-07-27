@@ -23,6 +23,7 @@ class SearchPageClass extends PageWithPagination {
         serializedArray[serializedArray.length] = {"name": "requestedPage", "value": requestedPage};
         serializedArray[serializedArray.length] = {"name": "pageSize", "value": this.pageSize};
         let that = this;
+        this.imageArea.empty();
         $.post("ImageServlet?method=pureSearch", serializedArray)
             .done(function (data) {
                 let searchResult = JSON.parse(data);
@@ -38,7 +39,6 @@ class SearchPageClass extends PageWithPagination {
     }
 
     setImages(searchResult) {
-        this.imageArea.empty();
         let imageList = searchResult['imageList'];
         for (let i = 0; i <= imageList.length - 1; i++) {
             let imageID = imageList[i]["imageID"];

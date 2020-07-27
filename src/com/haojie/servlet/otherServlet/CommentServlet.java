@@ -21,6 +21,9 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.Timestamp;
 
+/**
+ * The servlet for comments to handle ajax requests
+ */
 @WebServlet("/CommentServlet")
 public class CommentServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

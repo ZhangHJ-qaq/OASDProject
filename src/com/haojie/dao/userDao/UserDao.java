@@ -6,52 +6,79 @@ import com.haojie.others.ActionResult;
 import java.util.List;
 
 /**
- * 为User类设计的dao层
+ * The Dao layer designed for the traveluser table.
  */
 public interface UserDao {
 
     /**
-     * 插入一个用户 注册的时候会用到
-     * @param user 用户对象
-     * @return 封装了成功与否 与 信息的对象
+     * Insert a new user into the database
+     * @param user The user object
+     * @return Actionresult object.
      */
     public abstract ActionResult insertAUser(User user);
 
     /**
-     * 尝试根据给出的用户名和密码登录（dao层主要是查找数据库里有没有对应的记录，并更新sessionid）
-     * @param username 用户名
-     * @param password 密码
-     * @param newSessionID sessionid 用户每次登录以后都会更新在数据库里存储的sessionid 即：每个用户只能有一个sessionid 实现单点登录
-     * @return 封装了成功与否 与 信息的对象
+     * Try login and update the sessionID
+     * @param username username
+     * @param password password
+     * @param newSessionID The new sessionID. In this method, the user's sessionID stored in the database will be changed
+     *                     to the new sessionID
+     * @return ActionResult object.
      */
     public abstract ActionResult tryLogin(String username, String password, String newSessionID);
 
 
     /**
-     * 根据用户名和sessionid 尝试（自动）登录
-     * @param username 用户名
+     * Try auto login according to username and sessionid
+     * @param username username
      * @param sessionID sessionid
-     * @return 如果登录成功，返回用户对象，如果登录失败则返回null
+     * @return If login succeed, the user object entity will be returned. Otherwise ,you'll get a null.
      */
     public abstract User tryAutoLogin(String username, String sessionID);
 
 
     /**
-     * 在发出好友请求前，根据用户名搜索好友的函数
-     * @param username
-     * @return
+     * To search the possible users when a user is trying to add friends
+     * @param username username
+     * @return The list of user
      */
     public abstract List<User> searchUserToAddFriend(String username);
 
 
+    /**
+     * To check whether a user has existed in the database
+     * @param username username
+     * @return If exists, returns true. Otherwise, false.
+     */
     public abstract boolean userExists(String username);
 
+    /**
+     * Get the user entity
+     * @param username username
+     * @return The user entity
+     */
     public abstract User getUser(String username);
 
+    /**
+     * Get the user entity
+     * @param uid uid
+     * @return The user object entity
+     */
     public abstract User getUser(int uid);
 
+    /**
+     * Get all the friends of a specified user
+     * @param myuid The uid of the operator
+     * @return The user list
+     */
     public abstract List<User> getMyFriendList(int myuid);
 
+    /**
+     * To configure whether a user's favors can be seen by his or her friends
+     * @param uid The user's uid
+     * @param canBeSeenFavor Two options. 1 represents can, while 0 represents cannot.
+     * @return If action succeeds, returns true. Otherwise, returns false.
+     */
     public abstract boolean setCanBeSeenFavor(int uid,int canBeSeenFavor);
 
 }

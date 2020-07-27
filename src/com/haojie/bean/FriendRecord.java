@@ -1,6 +1,8 @@
 package com.haojie.bean;
 
-
+/**
+ * The entity class for friend record(in database, table travelfriendrecord)
+ */
 public class FriendRecord {
     private int friendRecordID;
     private int UID1;

@@ -1,5 +1,8 @@
 package com.haojie.bean;
 
+/**
+ * The entity class for friend request
+ */
 public class FriendRequest {
     private int requestID;
     private int senderUID;

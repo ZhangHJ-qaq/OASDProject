@@ -51,6 +51,7 @@ public class IndexServlet extends HttpServlet {
 
             request.getRequestDispatcher("indexjsp").forward(request, response);
         } catch (Exception e) {
+        }finally {
             DbUtils.closeQuietly(connection);
         }
 
