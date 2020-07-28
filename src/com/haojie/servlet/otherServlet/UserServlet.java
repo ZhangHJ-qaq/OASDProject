@@ -13,9 +13,7 @@ import com.haojie.dao.sysmessageDao.SysMessageDao;
 import com.haojie.dao.sysmessageDao.SysMessageDaoImpl;
 import com.haojie.dao.userDao.UserDao;
 import com.haojie.dao.userDao.UserDaoImpl;
-import com.haojie.exception.CountryCityMismatchException;
-import com.haojie.exception.PhotoInfoIncompleteException;
-import com.haojie.exception.TypeIncorrectException;
+import com.haojie.exception.*;
 import com.haojie.others.ActionResult;
 import com.haojie.others.SearchResult;
 import com.haojie.others.UploadPhotoInfo;
@@ -281,6 +279,21 @@ public class UserServlet extends HttpServlet {
                 return;
             }
 
+            //检测用户是否忘记选择了图片
+            try {
+                uploadPhotoInfo.checkFileExists();
+            } catch (FileNotExistException fileNotExistException) {
+                out.println(JSON.toJSON(new ActionResult(false, fileNotExistException.getMessage())));
+            }
+
+            //检测用户上传照片的大小是否太大了。
+            try {
+                uploadPhotoInfo.checkFileSize();
+            } catch (SizeToLargeException sizeToLargeException) {
+                out.println(JSON.toJSON(new ActionResult(false, sizeToLargeException.getMessage())));
+            }
+
+
             //检测图片中国家与城市是否对应
             try {
                 uploadPhotoInfo.checkCountryAndCity(connection);
@@ -288,6 +301,7 @@ public class UserServlet extends HttpServlet {
                 out.println(JSON.toJSON(new ActionResult(false, countryCityMismatchException.getMessage())));
                 return;
             }
+
 
             //检查图片类型
             try {
@@ -297,9 +311,9 @@ public class UserServlet extends HttpServlet {
                 return;
             }
 
+
             uploadPhotoInfo.generateFileName(connection);
 
-            ImageService imageService = new ImageService(connection);
 
             Image image = new Image(
                     uploadPhotoInfo.getTitle(), uploadPhotoInfo.getDescription(), 0, 0, Integer.parseInt(uploadPhotoInfo.getCity()),
@@ -367,6 +381,7 @@ public class UserServlet extends HttpServlet {
             UserService userService = new UserService(connection, request);
             ImageService imageService = new ImageService(connection);
             ImageFavorDao imageFavorDao = new ImageFavorDaoImpl(connection);
+
             //得到imageID
             int imageID = Integer.parseInt(request.getParameter("imageID"));
 
@@ -489,6 +504,13 @@ public class UserServlet extends HttpServlet {
                 } catch (TypeIncorrectException typeIncorrectException) {
                     out.println(JSON.toJSON(new ActionResult(false, typeIncorrectException.getMessage())));
                     return;
+                }
+
+                //检测用户上传照片的大小是否太大了。
+                try {
+                    uploadPhotoInfo.checkFileSize();
+                } catch (SizeToLargeException sizeToLargeException) {
+                    out.println(JSON.toJSON(new ActionResult(false, sizeToLargeException.getMessage())));
                 }
 
                 //得到原先的图片信息

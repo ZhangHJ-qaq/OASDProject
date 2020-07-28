@@ -66,8 +66,13 @@ public class UserService {
                 return new ActionResult(false, "注册失败");
             }
             if (!captchaInput.equals((String) httpSession.getAttribute("captcha"))) {
+                httpSession.setAttribute("captcha", MD5Utils.MD5(new SecureRandom().nextLong() + ""));
+
                 return new ActionResult(false, "验证码输入错误");
             }
+
+            //把session里的验证码设为一个奇怪的东西 即一个验证码只能实现一次
+            httpSession.setAttribute("captcha", MD5Utils.MD5(new SecureRandom().nextLong() + ""));
 
             if (!(username.length() >= 4 && username.length() <= 15)) {
                 //如果用户名长度不符合要求
@@ -124,8 +129,13 @@ public class UserService {
         try {
             //检查用户的输入验证码是否正确
             if (!captchaInput.equals((String) httpSession.getAttribute("captcha"))) {
+                //把session里的验证码设为一个奇怪的东西 即一个验证码只能实现一次
+                httpSession.setAttribute("captcha", MD5Utils.MD5(new SecureRandom().nextLong() + ""));
                 return new ActionResult(false, "验证码输入错误");
             }
+
+            httpSession.setAttribute("captcha", MD5Utils.MD5(new SecureRandom().nextLong() + ""));
+
 
             //得到数据库连接
             Connection connection = this.connection;
@@ -249,7 +259,8 @@ public class UserService {
 
     /**
      * To insert an image to database
-     * @param user The user object
+     *
+     * @param user  The user object
      * @param image The image object
      * @return ActionResult Object
      */
@@ -261,7 +272,8 @@ public class UserService {
 
     /**
      * To delete an image from database
-     * @param user The user object
+     *
+     * @param user    The user object
      * @param imageID The imageID
      * @return ActionResult Object
      */
@@ -274,9 +286,10 @@ public class UserService {
 
     /**
      * To modify an image in database
-     * @param user The user object
+     *
+     * @param user    The user object
      * @param imageID The imageID
-     * @param image The new image Object
+     * @param image   The new image Object
      * @return ActionResult Object
      */
     public ActionResult modifyImageInDB(User user, int imageID, Image image) {
@@ -290,9 +303,10 @@ public class UserService {
 
     /**
      * Search possible users to make friends with
-     * @param username username input
+     *
+     * @param username      username input
      * @param requestedPage requestedPage
-     * @param pageSize pageSize
+     * @param pageSize      pageSize
      * @return SearchResultObject
      */
     public SearchResult searchUserToAddFriend(String username, int requestedPage, int pageSize) {
@@ -308,9 +322,10 @@ public class UserService {
 
     /**
      * Get all friends of a user
-     * @param myuid user's uid
+     *
+     * @param myuid         user's uid
      * @param requestedPage requestedPage
-     * @param pageSize pageSize
+     * @param pageSize      pageSize
      * @return SearchResult
      */
     public SearchResult searchMyFriend(int myuid, int requestedPage, int pageSize) {
@@ -324,7 +339,8 @@ public class UserService {
 
     /**
      * To check whether a user has favored a comment
-     * @param uid uid
+     *
+     * @param uid       uid
      * @param commentID commentID
      * @return If has favored, returns true. Otherwise returns false
      */
@@ -341,7 +357,8 @@ public class UserService {
 
     /**
      * Favor a comment
-     * @param uid user's uid
+     *
+     * @param uid       user's uid
      * @param commentID commentID
      * @return ActionResult object
      */
@@ -378,7 +395,8 @@ public class UserService {
 
     /**
      * To cancel favor a comment
-     * @param uid User's uid
+     *
+     * @param uid       User's uid
      * @param commentID commentID
      * @return ActionResult Object
      */
@@ -417,7 +435,8 @@ public class UserService {
 
     /**
      * Config whether a user's favor can be seen by friends
-     * @param uid user's uid
+     *
+     * @param uid            user's uid
      * @param canBeSeenFavor 1 or 0
      * @return ActionResult object.
      */

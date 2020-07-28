@@ -6,13 +6,12 @@ import com.haojie.dao.countryDao.CountryDao;
 import com.haojie.dao.countryDao.CountryDaoImpl;
 import com.haojie.dao.imageDao.ImageDao;
 import com.haojie.dao.imageDao.ImageDaoImpl;
-import com.haojie.exception.CountryCityMismatchException;
-import com.haojie.exception.PhotoInfoIncompleteException;
-import com.haojie.exception.TypeIncorrectException;
+import com.haojie.exception.*;
 import com.haojie.utils.MD5Utils;
 import com.haojie.utils.MyUtils;
 
 import javax.servlet.http.Part;
+import java.io.File;
 import java.security.SecureRandom;
 import java.sql.Connection;
 
@@ -158,6 +157,23 @@ public class UploadPhotoInfo {
         }
         this.filename = filename;
         return filename;
+
+    }
+
+    public void checkFileExists() throws FileNotExistException {
+        String name = this.photo.getSubmittedFileName();
+        if (name == null) {
+            throw new FileNotExistException("你没有上传文件！");
+        }
+
+    }
+
+    public void checkFileSize() throws SizeToLargeException {
+        long size = this.photo.getSize();
+
+        if(size>10*1024*1024){
+            throw new SizeToLargeException("文件大小超过了允许范围。本站最多只允许上传大小为10MB的图片。");
+        }
 
     }
 

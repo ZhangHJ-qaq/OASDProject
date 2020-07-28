@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>好友列表</title>
+    <title>加好友</title>
     <link rel="stylesheet" href="libraries/bootstrap-4.5.0-dist/css/bootstrap.css">
     <link rel="stylesheet" href="libraries/FlexHelper/FlexHelper.css">
     <link rel="stylesheet" href="css/universal.css">
